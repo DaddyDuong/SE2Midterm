@@ -419,8 +419,10 @@
         <div th:each="product : ${products}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
-                    <!-- If no image available, use placeholder -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}">
+                    <!-- Hiển thị ảnh sản phẩm -->
+                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}"
+                         onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
+                    <!-- Placeholder khi không có ảnh -->
                     <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
                         <span style="color: #999;">Product Image</span>
                     </div>
