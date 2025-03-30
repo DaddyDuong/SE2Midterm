@@ -7,7 +7,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;  // Changed from 'long' to 'Long'
 
     private String username;
     private String password;
@@ -17,11 +17,11 @@ public class User {
         // Default constructor required by JPA
     }
 
-    public long getId() {
+    public Long getId() {  // Changed return type from 'long' to 'Long'
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {  // Changed parameter type from 'long' to 'Long'
         this.id = id;
     }
 

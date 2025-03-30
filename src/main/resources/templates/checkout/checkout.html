@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - E-Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+                .top-bar {
+            background-color: #222;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 15px;
+        }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        /* Main header */
+        .main-header {
+            background-color: #333;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-right: 25px;
+        }
+
+        .search-container {
+            flex-grow: 0;
+            margin: 0 auto;
+            position: relative;
+            width: 600px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .right-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .right-nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Categories dropdown */
+        .categories-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .categories-button {
+            background: none;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 15px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .categories-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .checkout-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            gap: 30px;
+        }
+
+        .checkout-form {
+            flex: 2;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .checkout-summary {
+            flex: 1;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .payment-method {
+            display: flex;
+            gap: 15px;
+        }
+
+        .payment-option {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option.selected {
+            border-color: #4CAF50;
+            background-color: #f0f9f0;
+        }
+
+        .payment-option img {
+            max-width: 50px;
+            margin-bottom: 10px;
+        }
+
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .order-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-item-quantity {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn-place-order {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-place-order:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<!-- Top bar -->
+<div class="top-bar">
+    <a href="#">Sell on E-Shop</a>
+    <a href="#">Help & Contact</a>
+</div>
+
+<!-- Main header -->
+<header class="main-header">
+    <div class="left-section">
+        <a href="/" class="logo">E-Shop</a>
+    </div>
+
+    <div class="right-nav">
+        <a th:href="@{/cart}">🛒 Cart</a>
+    </div>
+</header>
+
+<div class="checkout-container">
+    <!-- Checkout Form -->
+    <div class="checkout-form">
+        <form th:action="@{/checkout/process}" method="post">
+            <!-- Shipping Information -->
+            <div class="form-section">
+                <h2>Shipping Information</h2>
+
+                <div class="form-group">
+                    <label for="shippingName">Full Name</label>
+                    <input type="text" id="shippingName" name="shippingName"
+                           class="form-control" th:value="${user.username}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingAddress">Street Address</label>
+                    <input type="text" id="shippingAddress" name="shippingAddress"
+                           class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingCity">City</label>
+                    <input type="text" id="shippingCity" name="shippingCity"
+                           class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingPostalCode">Postal Code</label>
+                    <input type="text" id="shippingPostalCode" name="shippingPostalCode"
+                           class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="shippingCountry">Country</label>
+                    <input type="text" id="shippingCountry" name="shippingCountry"
+                           class="form-control" value="United States" required>
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-section">
+                <h2>Payment Method</h2>
+                <div class="payment-method">
+                    <div class="payment-option" onclick="selectPaymentMethod('credit')">
+                        <img src="/images/credit-card.png" alt="Credit Card">
+                        <p>Credit Card</p>
+                    </div>
+                    <div class="payment-option" onclick="selectPaymentMethod('paypal')">
+                        <img src="/images/paypal.png" alt="PayPal">
+                        <p>PayPal</p>
+                    </div>
+                    <div class="payment-option" onclick="selectPaymentMethod('bank')">
+                        <img src="/images/bank-transfer.png" alt="Bank Transfer">
+                        <p>Bank Transfer</p>
+                    </div>
+                </div>
+                <input type="hidden" id="paymentMethod" name="paymentMethod" value="">
+            </div>
+
+            <button type="submit" class="btn-place-order">Place Order</button>
+        </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="checkout-summary">
+        <h2>Order Summary</h2>
+
+        <div th:each="item : ${cart.items}" class="order-summary-item">
+            <div class="order-item-details">
+                <span th:text="${item.product.title}">Product Name</span>
+                <span class="order-item-quantity">
+                    Qty: <span th:text="${item.quantity}">1</span>
+                </span>
+            </div>
+            <span th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 2)}">$40.00</span>
+        </div>
+
+        <div class="order-summary-item">
+            <span>Subtotal</span>
+            <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 1, 2)}">$120.00</span>
+        </div>
+
+        <div class="order-summary-item">
+            <span>Tax (10%)</span>
+            <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 1, 2)}">$12.00</span>
+        </div>
+
+        <div class="order-total">
+            <div class="order-summary-item">
+                <span>Total</span>
+                <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 1, 2)}">$132.00</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectPaymentMethod(method) {
+        // Remove selected class from all payment options
+        const options = document.querySelectorAll('.payment-option');
+        options.forEach(option => option.classList.remove('selected'));
+
+        // Add selected class to clicked option
+        const selectedOption = document.querySelector(`.payment-option[onclick*="${method}"]`);
+        selectedOption.classList.add('selected');
+
+        // Set hidden input value
+        document.getElementById('paymentMethod').value = method;
+    }
+</script>
+</body>
+</html>
