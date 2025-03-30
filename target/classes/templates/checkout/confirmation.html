@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation - E-Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+                .top-bar {
+            background-color: #222;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 15px;
+        }
+
+        .top-bar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        /* Main header */
+        .main-header {
+            background-color: #333;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-right: 25px;
+        }
+
+        .search-container {
+            flex-grow: 0;
+            margin: 0 auto;
+            position: relative;
+            width: 600px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .right-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .right-nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Categories dropdown */
+        .categories-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .categories-button {
+            background: none;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 15px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .categories-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .confirmation-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .confirmation-icon {
+            font-size: 80px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .order-details {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .order-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .btn-continue {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-continue:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<!-- Top bar -->
+<div class="top-bar">
+    <a href="#">Sell on E-Shop</a>
+    <a href="#">Help & Contact</a>
+</div>
+
+<!-- Main header -->
+<header class="main-header">
+    <div class="left-section">
+        <a href="/" class="logo">E-Shop</a>
+    </div>
+
+    <div class="right-nav">
+        <a th:href="@{/cart}">🛒 Cart</a>
+    </div>
+</header>
+
+<div class="confirmation-container">
+    <div class="confirmation-icon">✓</div>
+
+    <h1 class="confirmation-title">Order Confirmed!</h1>
+
+    <p class="confirmation-message">
+        Thank you for your purchase. Your order has been successfully placed.
+    </p>
+
+    <div class="order-details">
+        <div class="order-details-row">
+            <strong>Order Number:</strong>
+            <span th:text="${orderId}">12345</span>
+        </div>
+        <div class="order-details-row">
+            <strong>Order Date:</strong>
+            <span th:text="${#temporals.format(#temporals.createNow(), 'dd MMM yyyy HH:mm')}">01 Jan 2024 10:30</span>
+        </div>
+    </div>
+
+    <a href="/" class="btn-continue">Continue Shopping</a>
+</div>
+</body>
+</html>
