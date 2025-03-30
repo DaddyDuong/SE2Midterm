@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Shop</title>
+    <title th:text="${title != null ? title + ' - E-Shop' : 'Products - E-Shop'}">Products - E-Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -141,175 +141,81 @@
             display: block;
         }
 
-        /* Hero slider */
-        .hero-slider {
-            position: relative;
-            height: 400px;
-            background-color: #666;
-            overflow: hidden;
-        }
-
-        .slides-container {
-            height: 100%;
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-        }
-
-        .slide-content {
-            width: 50%;
-            padding: 50px;
-            color: white;
-        }
-
-        .slide-content h1 {
-            font-size: 42px;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .slide-content p {
-            font-size: 18px;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .shop-now-btn {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            border: 2px solid #4CAF50;
-        }
-
-        .shop-now-btn:hover {
-            background-color: transparent;
-            color: white;
-        }
-
-        .slide-image {
-            width: 50%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .slider-nav {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
+        /* Product list page */
+        .page-title {
+            max-width: 1200px;
+            margin: 40px auto 20px;
             padding: 0 20px;
-            z-index: 1;
-            transform: translateY(-50%);
         }
 
-        .nav-btn {
-            background-color: rgba(255, 255, 255, 0.3);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-btn:hover {
-            background-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .slider-dots {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .dot.active {
-            background-color: white;
-        }
-
-        /* Features section */
-        .features {
-            display: flex;
-            justify-content: space-around;
-            padding: 30px 20px;
-            background-color: white;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        .feature {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .feature-icon {
-            font-size: 24px;
+        .page-title h1 {
+            font-size: 28px;
+            color: #333;
             margin-bottom: 10px;
         }
 
-        .feature h3 {
-            margin-bottom: 5px;
-            font-size: 18px;
-        }
-
-        .feature p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Product sections */
-        .section-title {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            margin: 40px 0 20px;
-            color: #333;
-        }
-
-        .section-subtitle {
-            text-align: center;
+        .page-title p {
             font-size: 16px;
             color: #666;
-            margin-bottom: 30px;
+        }
+
+        .products-container {
+            max-width: 1200px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+        }
+
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sort-label {
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .sort-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 50px;
         }
 
         .product-card {
@@ -409,27 +315,34 @@
             background-color: #45a049;
         }
 
-        .view-more {
-            text-align: center;
-            margin-bottom: 50px;
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
         }
 
-        .view-more-btn {
-            display: inline-block;
-            background-color: transparent;
-            color: #4CAF50;
-            border: 2px solid #4CAF50;
-            padding: 10px 25px;
-            text-decoration: none;
+        .page-item {
+            margin: 0 5px;
+        }
+
+        .page-link {
+            display: block;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background-color 0.3s, color 0.3s;
+            color: #4CAF50;
+            text-decoration: none;
+            transition: background-color 0.3s;
         }
 
-        .view-more-btn:hover {
+        .page-link:hover {
+            background-color: #f5f5f5;
+        }
+
+        .page-item.active .page-link {
             background-color: #4CAF50;
             color: white;
+            border-color: #4CAF50;
         }
     </style>
 </head>
@@ -469,112 +382,41 @@
     </div>
 </header>
 
-<!-- Hero Slider -->
-<div class="hero-slider">
-    <div class="slides-container">
-        <!-- Slide 1 -->
-        <div class="slide">
-            <div class="slide-content">
-                <h1>Present Your Products to Millions</h1>
-                <p>Discover amazing deals on thousands of products from our trusted sellers. Shop now and enjoy fast delivery!</p>
-                <a href="#" class="shop-now-btn">Shop Now ›</a>
-            </div>
-            <div class="slide-image" style="background-color: #555;">
-                <!-- Image placeholder 1 -->
-            </div>
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="slide">
-            <div class="slide-content">
-                <h1>New Arrivals Every Day</h1>
-                <p>Be the first to discover our newest products and exclusive collections before they sell out.</p>
-                <a href="#" class="shop-now-btn">Explore New ›</a>
-            </div>
-            <div class="slide-image" style="background-color: #446;">
-                <!-- Image placeholder 2 -->
-            </div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="slide">
-            <div class="slide-content">
-                <h1>Top Brands, Lowest Prices</h1>
-                <p>Find all your favorite brands at unbeatable prices. Quality products that won't break the bank.</p>
-                <a href="#" class="shop-now-btn">View Deals ›</a>
-            </div>
-            <div class="slide-image" style="background-color: #455;">
-                <!-- Image placeholder 3 -->
-            </div>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="slide">
-            <div class="slide-content">
-                <h1>Free Shipping on Orders</h1>
-                <p>Enjoy free shipping on all orders over $50. No promo code needed - discount applied at checkout.</p>
-                <a href="#" class="shop-now-btn">Start Shopping ›</a>
-            </div>
-            <div class="slide-image" style="background-color: #544;">
-                <!-- Image placeholder 4 -->
-            </div>
-        </div>
-
-        <!-- Slide 5 -->
-        <div class="slide">
-            <div class="slide-content">
-                <h1>Join Our Rewards Program</h1>
-                <p>Earn points with every purchase and redeem them for discounts on future orders. Sign up today!</p>
-                <a href="#" class="shop-now-btn">Join Now ›</a>
-            </div>
-            <div class="slide-image" style="background-color: #654;">
-                <!-- Image placeholder 5 -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation arrows -->
-    <div class="slider-nav">
-        <button class="nav-btn prev-btn">❮</button>
-        <button class="nav-btn next-btn">❯</button>
-    </div>
-
-    <!-- Dots navigation -->
-    <div class="slider-dots">
-        <span class="dot active" data-index="0"></span>
-        <span class="dot" data-index="1"></span>
-        <span class="dot" data-index="2"></span>
-        <span class="dot" data-index="3"></span>
-        <span class="dot" data-index="4"></span>
-    </div>
+<!-- Page Title -->
+<div class="page-title">
+    <h1 th:text="${title != null ? title : 'All Products'}">All Products</h1>
+    <p th:if="${products.size() > 0}" th:text="${'Showing ' + products.size() + ' products'}">Showing products</p>
+    <p th:if="${products.size() == 0}">No products found</p>
 </div>
 
-<!-- Features -->
-<section class="features">
-    <div class="feature">
-        <span class="feature-icon">🚚</span>
-        <h3>Fast Delivery</h3>
-        <p>Same Day Delivery</p>
-    </div>
-    <div class="feature">
-        <span class="feature-icon">💳</span>
-        <h3>Secure Payment</h3>
-        <p>Multiple Payment Options</p>
-    </div>
-    <div class="feature">
-        <span class="feature-icon">🎧</span>
-        <h3>Customer Support</h3>
-        <p>24/7 Customer Service</p>
-    </div>
-</section>
+<!-- Products Container -->
+<div class="products-container">
+    <div class="filter-bar">
+        <div class="filter-options">
+            <div class="filter-dropdown">
+                <button class="filter-btn">Category ▼</button>
+            </div>
+            <div class="filter-dropdown">
+                <button class="filter-btn">Price ▼</button>
+            </div>
+            <div class="filter-dropdown">
+                <button class="filter-btn">Brand ▼</button>
+            </div>
+        </div>
 
-<!-- Deals of the Month Section -->
-<section>
-    <h2 class="section-title">Deals of the Month</h2>
-    <p class="section-subtitle">Don't miss these special offers with big discounts</p>
+        <div class="sort-options">
+            <span class="sort-label">Sort by:</span>
+            <select class="sort-select">
+                <option value="popularity">Popularity</option>
+                <option value="price_low">Price: Low to High</option>
+                <option value="price_high">Price: High to Low</option>
+                <option value="newest">Newest Arrivals</option>
+            </select>
+        </div>
+    </div>
 
     <div class="products-grid">
-        <div th:each="product : ${deals}" class="product-card">
+        <div th:each="product : ${products}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
                     <!-- If no image available, use placeholder -->
@@ -597,43 +439,22 @@
         </div>
     </div>
 
-    <div class="view-more">
-        <a th:href="@{/products/deals}" class="view-more-btn">View All Deals</a>
-    </div>
-</section>
-
-<!-- Regular Products Section -->
-<section>
-    <h2 class="section-title">Shop Now</h2>
-    <p class="section-subtitle">Explore our wide range of high-quality products</p>
-
-    <div class="products-grid">
-        <div th:each="product : ${regularProducts}" class="product-card">
-            <a th:href="@{/product/{id}(id=${product.id})}">
-                <div class="product-image">
-                    <!-- If no image available, use placeholder -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}">
-                    <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">Product Image</span>
-                    </div>
-                </div>
-            </a>
-            <div class="product-details">
-                <h3 class="product-title" th:text="${product.title}">Product Title</h3>
-                <div class="product-price">
-                    <span class="current-price" th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}">$89.99</span>
-                </div>
-                <p class="product-source" th:text="${product.source}">Brand Name</p>
-                <button class="add-to-cart">Add to Cart</button>
-            </div>
+    <!-- Pagination (for future use) -->
+    <div class="pagination" th:if="${products.size() > 12}">
+        <div class="page-item active">
+            <a class="page-link" href="#">1</a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="#">2</a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="#">3</a>
+        </div>
+        <div class="page-item">
+            <a class="page-link" href="#">Next</a>
         </div>
     </div>
-
-    <div class="view-more">
-        <a th:href="@{/products}" class="view-more-btn">View All Products</a>
-    </div>
-</section>
-
+</div>
 <!-- Notification -->
 <div id="notification" class="notification">
     <span id="notification-message"></span>
@@ -663,63 +484,6 @@
 </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const slidesContainer = document.querySelector('.slides-container');
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
-
-        let currentIndex = 0;
-        const totalSlides = slides.length;
-
-        // Function to update slider position
-        function updateSlider() {
-            slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-            // Update active dot
-            dots.forEach(dot => dot.classList.remove('active'));
-            dots[currentIndex].classList.add('active');
-        }
-
-        // Next slide
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            updateSlider();
-        }
-
-        // Previous slide
-        function prevSlide() {
-            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-            updateSlider();
-        }
-
-        // Event listeners
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlide);
-
-        // Dot navigation
-        dots.forEach(dot => {
-            dot.addEventListener('click', function() {
-                currentIndex = parseInt(this.getAttribute('data-index'));
-                updateSlider();
-            });
-        });
-
-        // Auto slide (optional)
-        let slideInterval = setInterval(nextSlide, 5000);
-
-        // Pause auto slide on hover
-        const slider = document.querySelector('.hero-slider');
-        slider.addEventListener('mouseenter', () => {
-            clearInterval(slideInterval);
-        });
-
-        slider.addEventListener('mouseleave', () => {
-            slideInterval = setInterval(nextSlide, 5000);
-        });
-    });
-
     // Add to cart function
     function addToCart(button) {
         const productId = button.getAttribute('data-id');
