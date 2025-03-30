@@ -157,9 +157,19 @@
 
         .slide {
             min-width: 100%;
-            height: 100%;
             display: flex;
+            align-items: stretch; /* 👈 Cho 2 bên cao bằng nhau */
         }
+
+        .slide-image {
+            width: 50%;
+            height: 100%;
+            background-size: cover;         /* 👈 Phủ full khung */
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+
 
         .slide-content {
             width: 50%;
@@ -169,14 +179,14 @@
         }
 
         .slide-content h1 {
-            font-size: 42px;
+            font-size: 56px;
             line-height: 1.2;
             margin-bottom: 20px;
             font-weight: 700;
         }
 
         .slide-content p {
-            font-size: 18px;
+            font-size: 22px;
             margin-bottom: 30px;
             line-height: 1.5;
         }
@@ -185,12 +195,12 @@
             display: inline-block;
             background-color: #4CAF50;
             color: white;
-            padding: 12px 25px;
+            padding: 14px 30px;
             text-decoration: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 500;
-            border: 2px solid #4CAF50;
+            border: 6px solid #4CAF50;
             cursor: pointer;
             margin-left: 100px; /* Thêm margin bên phải để tạo khoảng cách */
         }
@@ -495,9 +505,7 @@
                 <p>Discover amazing deals on thousands of products from our trusted sellers. Shop now and enjoy fast delivery!</p>
                 <a href="/products" class="shop-now-btn">Shop Now ›</a>
             </div>
-            <div class="slide-image" style="background-color: #555;">
-                <!-- Image placeholder 1 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/1.jpg');"></div>
         </div>
 
         <!-- Slide 2 -->
@@ -507,9 +515,7 @@
                 <p>Be the first to discover our newest products and exclusive collections before they sell out.</p>
                 <a href="/products" class="shop-now-btn">Explore New ›</a>
             </div>
-            <div class="slide-image" style="background-color: #446;">
-                <!-- Image placeholder 2 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/2.jpg');"></div>
         </div>
 
         <!-- Slide 3 -->
@@ -519,9 +525,7 @@
                 <p>Find all your favorite brands at unbeatable prices. Quality products that won't break the bank.</p>
                 <a href="/products/deals" class="shop-now-btn">View Deals ›</a>
             </div>
-            <div class="slide-image" style="background-color: #455;">
-                <!-- Image placeholder 3 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/3.jpg');"></div>
         </div>
 
         <!-- Slide 4 -->
@@ -531,9 +535,7 @@
                 <p>Enjoy free shipping on all orders over $50. No promo code needed - discount applied at checkout.</p>
                 <a href="/products" class="shop-now-btn">Start Shopping ›</a>
             </div>
-            <div class="slide-image" style="background-color: #544;">
-                <!-- Image placeholder 4 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/4.jpg');"></div>
         </div>
 
         <!-- Slide 5 -->
@@ -543,9 +545,8 @@
                 <p>Earn points with every purchase and redeem them for discounts on future orders. Sign up today!</p>
                 <a href="/products" class="shop-now-btn">Join Now ›</a>
             </div>
-            <div class="slide-image" style="background-color: #654;">
-                <!-- Image placeholder 5 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/5.jpg');"></div>
+
         </div>
     </div>
 
@@ -593,14 +594,11 @@
         <div th:each="product : ${deals}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
-                    <!-- Hiển thị ảnh sản phẩm -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}"
+                    <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
+                         th:alt="${product.title}"
                          onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
-                    <!-- Placeholder khi không có ảnh -->
-                    <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">Product Image</span>
-                    </div>
                 </div>
+
             </a>
             <div class="product-details">
                 <h3 class="product-title" th:text="${product.title}">Product Title</h3>
@@ -629,14 +627,11 @@
         <div th:each="product : ${regularProducts}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
-                    <!-- Hiển thị ảnh sản phẩm -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}"
+                    <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
+                         th:alt="${product.title}"
                          onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
-                    <!-- Placeholder khi không có ảnh -->
-                    <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">Product Image</span>
-                    </div>
                 </div>
+
             </a>
             <div class="product-details">
                 <h3 class="product-title" th:text="${product.title}">Product Title</h3>

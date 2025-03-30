@@ -374,14 +374,11 @@
 <div class="product-container">
     <div class="product-gallery">
         <div class="main-image">
-            <!-- Hiển thị ảnh sản phẩm chi tiết -->
-            <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}"
+            <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
+                 th:alt="${product.title}"
                  onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
-            <!-- Placeholder khi không có ảnh -->
-            <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                <span style="color: #999; font-size: 18px;">Product Image</span>
-            </div>
         </div>
+
     </div>
 
     <div class="product-info">
