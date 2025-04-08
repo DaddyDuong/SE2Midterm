@@ -157,25 +157,36 @@
 
         .slide {
             min-width: 100%;
-            height: 100%;
             display: flex;
+            align-items: stretch; /* 👈 Cho 2 bên cao bằng nhau */
         }
+
+        .slide-image {
+            width: 50%;
+            height: 100%;
+            background-size: cover;         /* 👈 Phủ full khung */
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+
 
         .slide-content {
             width: 50%;
             padding: 50px;
+            padding-right: 70px; /* Thêm padding bên phải để tạo khoảng cách với nút điều hướng */
             color: white;
         }
 
         .slide-content h1 {
-            font-size: 42px;
+            font-size: 56px;
             line-height: 1.2;
             margin-bottom: 20px;
             font-weight: 700;
         }
 
         .slide-content p {
-            font-size: 18px;
+            font-size: 22px;
             margin-bottom: 30px;
             line-height: 1.5;
         }
@@ -184,12 +195,24 @@
             display: inline-block;
             background-color: #4CAF50;
             color: white;
-            padding: 12px 25px;
+            padding: 14px 30px;
             text-decoration: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 500;
-            border: 2px solid #4CAF50;
+            border: 6px solid #4CAF50;
+            cursor: pointer;
+            margin-left: 100px; /* Thêm margin bên phải để tạo khoảng cách */
+        }
+
+        .shop-now-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
         }
 
         .shop-now-btn:hover {
@@ -211,8 +234,9 @@
             display: flex;
             justify-content: space-between;
             padding: 0 20px;
-            z-index: 1;
+            z-index: 2; /* Tăng z-index lên để chắc chắn nút điều hướng luôn hiển thị trên cùng */
             transform: translateY(-50%);
+            pointer-events: none; /* Thêm dòng này để đảm bảo nút điều hướng không chặn sự kiện click */
         }
 
         .nav-btn {
@@ -228,6 +252,7 @@
             cursor: pointer;
             font-size: 18px;
             transition: background-color 0.3s;
+            pointer-events: auto; /* Cho phép sự kiện trên nút điều hướng */
         }
 
         .nav-btn:hover {
@@ -425,6 +450,7 @@
             font-size: 16px;
             font-weight: 500;
             transition: background-color 0.3s, color 0.3s;
+            cursor: pointer; =
         }
 
         .view-more-btn:hover {
@@ -477,11 +503,9 @@
             <div class="slide-content">
                 <h1>Present Your Products to Millions</h1>
                 <p>Discover amazing deals on thousands of products from our trusted sellers. Shop now and enjoy fast delivery!</p>
-                <a href="#" class="shop-now-btn">Shop Now ›</a>
+                <a href="/products" class="shop-now-btn">Shop Now ›</a>
             </div>
-            <div class="slide-image" style="background-color: #555;">
-                <!-- Image placeholder 1 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/1.jpg');"></div>
         </div>
 
         <!-- Slide 2 -->
@@ -489,11 +513,9 @@
             <div class="slide-content">
                 <h1>New Arrivals Every Day</h1>
                 <p>Be the first to discover our newest products and exclusive collections before they sell out.</p>
-                <a href="#" class="shop-now-btn">Explore New ›</a>
+                <a href="/products" class="shop-now-btn">Explore New ›</a>
             </div>
-            <div class="slide-image" style="background-color: #446;">
-                <!-- Image placeholder 2 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/2.jpg');"></div>
         </div>
 
         <!-- Slide 3 -->
@@ -501,11 +523,9 @@
             <div class="slide-content">
                 <h1>Top Brands, Lowest Prices</h1>
                 <p>Find all your favorite brands at unbeatable prices. Quality products that won't break the bank.</p>
-                <a href="#" class="shop-now-btn">View Deals ›</a>
+                <a href="/products/deals" class="shop-now-btn">View Deals ›</a>
             </div>
-            <div class="slide-image" style="background-color: #455;">
-                <!-- Image placeholder 3 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/3.jpg');"></div>
         </div>
 
         <!-- Slide 4 -->
@@ -513,11 +533,9 @@
             <div class="slide-content">
                 <h1>Free Shipping on Orders</h1>
                 <p>Enjoy free shipping on all orders over $50. No promo code needed - discount applied at checkout.</p>
-                <a href="#" class="shop-now-btn">Start Shopping ›</a>
+                <a href="/products" class="shop-now-btn">Start Shopping ›</a>
             </div>
-            <div class="slide-image" style="background-color: #544;">
-                <!-- Image placeholder 4 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/4.jpg');"></div>
         </div>
 
         <!-- Slide 5 -->
@@ -525,11 +543,10 @@
             <div class="slide-content">
                 <h1>Join Our Rewards Program</h1>
                 <p>Earn points with every purchase and redeem them for discounts on future orders. Sign up today!</p>
-                <a href="#" class="shop-now-btn">Join Now ›</a>
+                <a href="/products" class="shop-now-btn">Join Now ›</a>
             </div>
-            <div class="slide-image" style="background-color: #654;">
-                <!-- Image placeholder 5 -->
-            </div>
+            <div class="slide-image" style="background-image: url('/images/slider/5.jpg');"></div>
+
         </div>
     </div>
 
@@ -577,12 +594,11 @@
         <div th:each="product : ${deals}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
-                    <!-- If no image available, use placeholder -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}">
-                    <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">Product Image</span>
-                    </div>
+                    <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
+                         th:alt="${product.title}"
+                         onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
                 </div>
+
             </a>
             <div class="product-details">
                 <h3 class="product-title" th:text="${product.title}">Product Title</h3>
@@ -611,12 +627,11 @@
         <div th:each="product : ${regularProducts}" class="product-card">
             <a th:href="@{/product/{id}(id=${product.id})}">
                 <div class="product-image">
-                    <!-- If no image available, use placeholder -->
-                    <img th:if="${product.imagePath != null}" th:src="${product.imagePath}" th:alt="${product.title}">
-                    <div th:unless="${product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">Product Image</span>
-                    </div>
+                    <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
+                         th:alt="${product.title}"
+                         onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
                 </div>
+
             </a>
             <div class="product-details">
                 <h3 class="product-title" th:text="${product.title}">Product Title</h3>
@@ -624,7 +639,7 @@
                     <span class="current-price" th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}">$89.99</span>
                 </div>
                 <p class="product-source" th:text="${product.source}">Brand Name</p>
-                <button class="add-to-cart">Add to Cart</button>
+                <button class="add-to-cart" th:attr="data-id=${product.id}" onclick="addToCart(this)">Add to Cart</button>
             </div>
         </div>
     </div>

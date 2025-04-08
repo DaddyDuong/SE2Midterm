@@ -450,24 +450,17 @@
     <div th:unless="${cart.isEmpty()}">
         <table class="cart-table">
             <thead>
-            <tr>
-                <th style="width: 50%">Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
+            <!-- Table header remains the same -->
             </thead>
             <tbody>
             <tr th:each="item : ${cart.items}">
                 <td>
                     <div class="product-col">
                         <div class="product-image">
-                            <!-- If no image available, use placeholder -->
-                            <img th:if="${item.product.imagePath != null}" th:src="${item.product.imagePath}" th:alt="${item.product.title}">
-                            <div th:unless="${item.product.imagePath != null}" style="width: 100%; height: 100%; background-color: #eee; display: flex; align-items: center; justify-content: center;">
-                                <span style="color: #999; font-size: 12px;">Image</span>
-                            </div>
+                            <!-- Hiển thị ảnh sản phẩm theo title -->
+                            <img th:src="@{'/images/products/' + ${item.product.title} + '.jpg'}"
+                                 th:alt="${item.product.title}"
+                                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
                         </div>
                         <div class="product-details">
                             <h3 th:text="${item.product.title}">Product Title</h3>
@@ -477,6 +470,7 @@
                         </div>
                     </div>
                 </td>
+
                 <td class="price" th:text="${'$' + #numbers.formatDecimal(item.product.price, 1, 2)}">$40.00</td>
                 <td>
                     <div class="quantity-controls">

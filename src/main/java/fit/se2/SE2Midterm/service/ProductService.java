@@ -5,6 +5,7 @@ import fit.se2.SE2Midterm.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,28 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    /**
+     * Initialize product image paths
+     */
+    @PostConstruct
+    public void initializeProductImages() {
+        List<Product> products = productRepository.findAll();
+        boolean needsUpdate = false;
+
+        for (Product product : products) {
+            if (product.getImagePath() == null || product.getImagePath().isEmpty()) {
+                // Sử dụng trực tiếp tên sản phẩm làm tên file
+                String imagePath = "/images/products/" + product.getTitle() + ".jpg";
+                product.setImagePath(imagePath);
+                needsUpdate = true;
+            }
+        }
+
+        if (needsUpdate) {
+            productRepository.saveAll(products);
+        }
+    }
 
     /**
      * Get all products
