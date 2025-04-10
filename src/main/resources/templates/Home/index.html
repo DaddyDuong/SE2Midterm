@@ -676,7 +676,127 @@
         opacity: 1;
     }
 </style>
+<style>
+    /* Footer Styles */
+    .footer {
+        background-color: #333;
+        color: white;
+        padding: 40px 0 20px;
+        margin-top: 50px;
+    }
 
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .footer-column {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 30px;
+        padding-right: 20px;
+    }
+
+    .footer-column h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .footer-column h3:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background-color: #4CAF50;
+    }
+
+    .footer-column p {
+        margin-bottom: 10px;
+        line-height: 1.6;
+        color: #ccc;
+    }
+
+    /* Social Media Icons */
+    .social-icons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .social-icon {
+        display: flex;
+        align-items: center;
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .social-icon:hover {
+        color: #4CAF50;
+    }
+
+    .icon {
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Payment Method Icons */
+    .payment-icons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .payment-icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #ccc;
+        font-size: 12px;
+    }
+
+    .payment-icon svg {
+        margin-bottom: 5px;
+        background-color: white;
+        border-radius: 4px;
+        padding: 3px;
+    }
+
+    /* Copyright */
+    .copyright {
+        text-align: center;
+        padding-top: 20px;
+        margin-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #aaa;
+        font-size: 14px;
+    }
+
+    /* Responsive Footer */
+    @media (max-width: 768px) {
+        .footer-container {
+            flex-direction: column;
+        }
+
+        .footer-column {
+            width: 100%;
+            padding-right: 0;
+        }
+
+        .payment-icons {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const slidesContainer = document.querySelector('.slides-container');
@@ -782,5 +902,6 @@
         }
     }
 </script>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
