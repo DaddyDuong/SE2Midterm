@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
+
+    <!-- Page Header -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="fw-bold mb-3">Help & Contact</h1>
+                    <p class="lead text-muted">We're here to help! Reach out to us with any questions or concerns about our products or services.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Form Section -->
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <form class="contact-form" method="post" th:action="@{/contact}" th:object="${contactForm}">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" id="name" name="name" th:field="*{name}" class="form-control" placeholder="Your name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" id="email" name="email" th:field="*{email}" class="form-control" placeholder="Your email" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">Phone (Optional)</label>
+                                        <input type="tel" id="phone" name="phone" th:field="*{phone}" class="form-control" placeholder="Your phone number">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="subject" class="form-label">Subject</label>
+                                        <select id="subject" name="subject" th:field="*{subject}" class="form-select" required>
+                                            <option value="" selected disabled>Select a subject</option>
+                                            <option value="Product Inquiry">Product Inquiry</option>
+                                            <option value="Order Status">Order Status</option>
+                                            <option value="Returns & Refunds">Returns & Refunds</option>
+                                            <option value="Technical Issue">Technical Issue</option>
+                                            <option value="Feedback">Feedback</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="message" class="form-label">Message</label>
+                                        <textarea id="message" name="message" th:field="*{message}" class="form-control" rows="5" placeholder="How can we help you?" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Info Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5 position-relative pb-3">Get In Touch</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-4">
+                        <div class="text-primary mb-3">
+                            <i class="fas fa-map-marker-alt fa-3x"></i>
+                        </div>
+                        <h5 class="card-title">Our Location</h5>
+                        <p class="card-text text-muted">Km9 Đ. Nguyễn Trãi, P. Văn Quán, Nam Từ Liêm, Hà Nội</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-4">
+                        <div class="text-primary mb-3">
+                            <i class="fas fa-phone-alt fa-3x"></i>
+                        </div>
+                        <h5 class="card-title">Hotline</h5>
+                        <p class="card-text text-muted">(+84)88899911</p>
+                        <p class="card-text small text-muted">Monday-Friday: 8am-5pm</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm text-center p-4">
+                        <div class="text-primary mb-3">
+                            <i class="fas fa-envelope fa-3x"></i>
+                        </div>
+                        <h5 class="card-title">Email Us</h5>
+                        <p class="card-text text-muted">support@eshop.com</p>
+                        <p class="card-text small text-muted">We'll respond within 24 hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 position-relative pb-3">Frequently Asked Questions</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    How do I track my order?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    You can track your order by logging into your account and viewing the "Order History" section. Alternatively, you can use the tracking number provided in your order confirmation email to check the status on our shipping partner's website.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    What is your return policy?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We offer a 30-day return policy for most items. Products must be returned in their original packaging and condition. Some products, such as personalized items or perishable goods, may not be eligible for return. Please contact our customer service team for assistance with returns.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    How long does shipping take?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Shipping times vary depending on your location and the selected shipping method. Standard shipping typically takes 3-7 business days within Vietnam. Express shipping options are available for faster delivery. International shipping may take 7-14 business days or longer depending on customs processing.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
+    
+    <!-- Scripts -->
+    <div th:replace="fragments/header :: scripts"></div>
+    
+    <style>
+        /* Custom styles */
+        h2.position-relative.pb-3:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 80px;
+            height: 3px;
+            background-color: #4CAF50;
+            transform: translateX(-50%);
+        }
+        
+        .accordion-button:not(.collapsed) {
+            color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .accordion-button:focus {
+            border-color: rgba(76, 175, 80, 0.5);
+            box-shadow: 0 0 0 0.25rem rgba(76, 175, 80, 0.25);
+        }
+    </style>
+</body>
+</html> 

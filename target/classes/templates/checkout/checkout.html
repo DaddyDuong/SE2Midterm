@@ -2,392 +2,251 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - E-Shop</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-        }
-
-                .top-bar {
-            background-color: #222;
-            color: white;
-            padding: 8px 20px;
-            display: flex;
-            justify-content: flex-end;
-            font-size: 15px;
-        }
-
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-        }
-
-        /* Main header */
-        .main-header {
-            background-color: #333;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px;
-        }
-
-        .left-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 28px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-right: 25px;
-        }
-
-        .search-container {
-            flex-grow: 0;
-            margin: 0 auto;
-            position: relative;
-            width: 600px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-            background: none;
-            border: none;
+        .payment-method-card {
             cursor: pointer;
-            font-size: 18px;
-        }
-
-        .right-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .right-nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Categories dropdown */
-        .categories-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .categories-button {
-            background: none;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 15px;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .categories-dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .checkout-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            display: flex;
-            gap: 30px;
-        }
-
-        .checkout-form {
-            flex: 2;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .checkout-summary {
-            flex: 1;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-        }
-
-        .form-section h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #333;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #666;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .payment-method {
-            display: flex;
-            gap: 15px;
-        }
-
-        .payment-option {
-            flex: 1;
-            border: 1px solid #ddd;
-            border-radius: 4px;
             padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .payment-option.selected {
-            border-color: #4CAF50;
-            background-color: #f0f9f0;
-        }
-
-        .payment-option img {
-            max-width: 50px;
+            border-radius: 5px;
             margin-bottom: 10px;
         }
-
-        .order-summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
+        .payment-method-card.selected {
+            border-color: #28a745;
+            background-color: #f8f9fa;
         }
-
-        .order-item-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .order-item-quantity {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .btn-place-order {
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .btn-place-order:hover {
-            background-color: #45a049;
-        }
-
-        .error-message {
-            color: #dc3545;
-            margin-bottom: 15px;
+        .payment-method-card i {
+            font-size: 24px;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
-<!-- Top bar -->
-<div class="top-bar">
-    <a href="#">Sell on E-Shop</a>
-    <a href="#">Help & Contact</a>
+
+<!-- Header Fragment -->
+<div th:replace="fragments/footer :: header"></div>
+
+<!-- Breadcrumb Section -->
+<div class="container py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/cart">Shopping Cart</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
 </div>
 
-<!-- Main header -->
-<header class="main-header">
-    <div class="left-section">
-        <a href="/" class="logo">E-Shop</a>
-    </div>
-
-    <div class="right-nav">
-        <a th:href="@{/cart}">🛒 Cart</a>
-    </div>
-</header>
-
-<div class="checkout-container">
-    <!-- Checkout Form -->
-    <div class="checkout-form">
-        <form th:action="@{/checkout/process}" method="post">
-            <!-- Shipping Information -->
-            <div class="form-section">
-                <h2>Shipping Information</h2>
-
-                <div class="form-group">
-                    <label for="shippingName">Full Name</label>
-                    <input type="text" id="shippingName" name="shippingName"
-                           class="form-control" th:value="${user.username}" required>
+<!-- Checkout Section -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Checkout Information -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Shipping Information</h4>
                 </div>
-
-                <div class="form-group">
-                    <label for="shippingAddress">Street Address</label>
-                    <input type="text" id="shippingAddress" name="shippingAddress"
-                           class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="shippingCity">City</label>
-                    <input type="text" id="shippingCity" name="shippingCity"
-                           class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="shippingPostalCode">Postal Code</label>
-                    <input type="text" id="shippingPostalCode" name="shippingPostalCode"
-                           class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="shippingCountry">Country</label>
-                    <input type="text" id="shippingCountry" name="shippingCountry"
-                           class="form-control" value="United States" required>
+                <div class="card-body">
+                    <!-- Checkout Form -->
+                    <form id="checkoutForm" th:action="@{/checkout/process}" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" name="city" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="state" class="form-label">State/Province</label>
+                                <input type="text" class="form-control" id="state" name="state" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="zip" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" id="zip" name="zip" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Order Notes (optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <!-- Payment Method -->
-            <div class="form-section">
-                <h2>Payment Method</h2>
-                <div class="payment-method">
-                    <div class="payment-option" onclick="selectPaymentMethod('credit')">
-                        <img src="/static/credit-card.png" alt="Credit Card">
-                        <p>Credit Card</p>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Payment Method</h4>
+                </div>
+                <div class="card-body">
+                    <div class="payment-method-card selected" onclick="selectPaymentMethod(this, 'cash')">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="paymentMethod" value="cash" checked hidden>
+                            <i class="fas fa-money-bill text-success"></i>
+                            <div>
+                                <h5 class="mb-0">Cash on Delivery</h5>
+                                <p class="mb-0 text-muted">Pay when you receive your order</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="payment-option" onclick="selectPaymentMethod('paypal')">
-                        <img src="/static/paypal.png" alt="PayPal">
-                        <p>PayPal</p>
+                    
+                    <div class="payment-method-card" onclick="selectPaymentMethod(this, 'credit')">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="paymentMethod" value="credit" hidden>
+                            <i class="fas fa-credit-card text-primary"></i>
+                            <div>
+                                <h5 class="mb-0">Credit/Debit Card</h5>
+                                <p class="mb-0 text-muted">Visa, Mastercard, American Express</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="payment-option" onclick="selectPaymentMethod('bank')">
-                        <img src="/static/bank-transfer.png" alt="Bank Transfer">
-                        <p>Bank Transfer</p>
+                    
+                    <div class="payment-method-card" onclick="selectPaymentMethod(this, 'paypal')">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="paymentMethod" value="paypal" hidden>
+                            <i class="fab fa-paypal text-info"></i>
+                            <div>
+                                <h5 class="mb-0">PayPal</h5>
+                                <p class="mb-0 text-muted">Pay securely with PayPal</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <input type="hidden" id="paymentMethod" name="paymentMethod" value="">
             </div>
-
-            <button type="submit" class="btn-place-order">Place Order</button>
-        </form>
-    </div>
-
-    <!-- Order Summary -->
-    <div class="checkout-summary">
-        <h2>Order Summary</h2>
-
-        <div th:each="item : ${cart.items}" class="order-summary-item">
-            <div class="order-item-details">
-                <span th:text="${item.product.title}">Product Name</span>
-                <span class="order-item-quantity">
-                    Qty: <span th:text="${item.quantity}">1</span>
-                </span>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <!-- Cart Items Summary -->
+                        <div th:each="item : ${cart.items}" class="d-flex justify-content-between mb-2">
+                            <div>
+                                <span th:text="${item.product.title}">Product Title</span>
+                                <span class="text-muted">x<span th:text="${item.quantity}">1</span></span>
+                            </div>
+                            <span th:text="${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')} + ' VND'">$99.99</span>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Totals -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'COMMA', 2, 'POINT')} + ' VND'">$199.98</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span th:text="${#numbers.formatDecimal(cart.shippingCost, 0, 'COMMA', 2, 'POINT')} + ' VND'">$10.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>VAT (10%):</span>
+                        <span th:text="${#numbers.formatDecimal(cart.tax, 0, 'COMMA', 2, 'POINT')} + ' VND'">$19.99</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total:</strong>
+                        <strong class="text-primary" th:text="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 2, 'POINT')} + ' VND'">$229.97</strong>
+                    </div>
+                    
+                    <!-- Place Order Button -->
+                    <button type="button" class="btn btn-primary w-100" onclick="document.getElementById('checkoutForm').submit()">
+                        Place Order <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                    
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            By placing your order, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                        </small>
+                    </div>
+                </div>
             </div>
-            <span th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 2)}">$40.00</span>
-        </div>
-
-        <div class="order-summary-item">
-            <span>Subtotal</span>
-            <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 1, 2)}">$120.00</span>
-        </div>
-
-        <div class="order-summary-item">
-            <span>Tax (10%)</span>
-            <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 1, 2)}">$12.00</span>
-        </div>
-
-        <div class="order-total">
-            <div class="order-summary-item">
-                <span>Total</span>
-                <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 1, 2)}">$132.00</span>
+            
+            <!-- Secure Checkout Info -->
+            <div class="mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 text-center">
+                            <i class="fas fa-lock text-success me-2"></i>
+                            <span>Secure Checkout</span>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png" alt="Visa" height="30" class="me-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/200px-Mastercard_2019_logo.svg.png" alt="Mastercard" height="30" class="me-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/200px-American_Express_logo_%282018%29.svg.png" alt="Amex" height="30" class="me-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/200px-PayPal.svg.png" alt="PayPal" height="30">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Bootstrap and JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function selectPaymentMethod(method) {
-        // Remove selected class from all payment options
-        const options = document.querySelectorAll('.payment-option');
-        options.forEach(option => option.classList.remove('selected'));
-
-        // Add selected class to clicked option
-        const selectedOption = document.querySelector(`.payment-option[onclick*="${method}"]`);
-        selectedOption.classList.add('selected');
-
-        // Set hidden input value
-        document.getElementById('paymentMethod').value = method;
+    function selectPaymentMethod(element, method) {
+        // Remove selected class from all payment methods
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected class to chosen payment method
+        element.classList.add('selected');
+        
+        // Check the radio button
+        document.querySelector(`input[value="${method}"]`).checked = true;
+        
+        // Add payment method to form
+        const paymentMethodInput = document.getElementById('paymentMethod');
+        if (!paymentMethodInput) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.id = 'paymentMethod';
+            input.name = 'paymentMethod';
+            input.value = method;
+            document.getElementById('checkoutForm').appendChild(input);
+        } else {
+            paymentMethodInput.value = method;
+        }
     }
 </script>
+
 </body>
 </html>

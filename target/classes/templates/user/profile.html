@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
+
+    <!-- Profile Section -->
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3 mb-4">
+                <div class="list-group">
+                    <div class="list-group-item bg-dark text-white">
+                        <h5 class="mb-0">My Account</h5>
+                    </div>
+                    <a th:href="@{/user/account}" class="list-group-item list-group-item-action">Account Overview</a>
+                    <a th:href="@{/user/profile}" class="list-group-item list-group-item-action active">My Profile</a>
+                    <a th:href="@{/cart/view}" class="list-group-item list-group-item-action">My Cart</a>
+                    <a th:href="@{/user/logout}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">My Profile</h4>
+                    </div>
+                    
+                    <!-- Success message -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+                        <span th:text="${successMessage}">Profile updated successfully!</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <form th:action="@{/user/profile/update}" th:object="${user}" method="post">
+                            <div class="row">
+                                <!-- Avatar Column -->
+                                <div class="col-md-4 mb-4 text-center">
+                                    <div class="avatar-wrapper mb-3">
+                                        <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="User Avatar" 
+                                             class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                        <img th:unless="${user.avatarUrl}" src="https://via.placeholder.com/150?text=Avatar" alt="Default Avatar" 
+                                             class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="avatarUrl" class="form-label">Avatar URL</label>
+                                        <input type="text" class="form-control" id="avatarUrl" th:field="*{avatarUrl}" 
+                                               placeholder="Enter image URL">
+                                    </div>
+                                </div>
+                                
+                                <!-- Personal Info Column -->
+                                <div class="col-md-8">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="fullName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" 
+                                                   placeholder="Enter your full name">
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                                   placeholder="Enter your email">
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" 
+                                                   placeholder="Enter your phone number">
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" rows="3" th:field="*{address}" 
+                                                      placeholder="Enter your address"></textarea>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label for="age" class="form-label">Age</label>
+                                            <input type="number" class="form-control" id="age" th:field="*{age}" 
+                                                   placeholder="Enter your age" min="1" max="120">
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label for="gender" class="form-label">Gender</label>
+                                            <select class="form-select" id="gender" th:field="*{gender}">
+                                                <option value="">Select gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                                <option value="Prefer not to say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label for="preferredPaymentMethod" class="form-label">Payment Method</label>
+                                            <select class="form-select" id="preferredPaymentMethod" th:field="*{preferredPaymentMethod}">
+                                                <option value="">Select payment method</option>
+                                                <option value="Credit Card">Credit Card</option>
+                                                <option value="Visa">Visa</option>
+                                                <option value="PayPal">PayPal</option>
+                                                <option value="Cash on Delivery">Cash on Delivery</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 text-end">
+                                <button type="reset" class="btn btn-outline-secondary me-2">Reset</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <!-- Scripts -->
+    <div th:replace="fragments/header :: scripts"></div>
+</body>
+</html> 

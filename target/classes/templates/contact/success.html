@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow-sm text-center p-5 my-5">
+                    <div class="text-success mb-4">
+                        <i class="fas fa-check-circle fa-5x"></i>
+                    </div>
+                    <h1 class="h2 mb-3">Message Sent Successfully!</h1>
+                    <p class="lead text-muted mb-4" th:if="${success}" th:text="${success}">Thank you for your message! We will get back to you soon.</p>
+                    <p class="lead text-muted mb-4" th:unless="${success}">Thank you for your message! We will get back to you soon.</p>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="/" class="btn btn-primary px-4 py-2">Continue Shopping</a>
+                        <a href="/contact" class="btn btn-outline-secondary px-4 py-2">Send Another Message</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
+    
+    <!-- Scripts -->
+    <div th:replace="fragments/header :: scripts"></div>
+</body>
+</html> 

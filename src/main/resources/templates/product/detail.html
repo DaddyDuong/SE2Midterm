@@ -1,522 +1,303 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${product.title} + ' - E-Shop'">Product Detail - E-Shop</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-        }
-
-        /* Top bar */
-        .top-bar {
-            background-color: #222;
-            color: white;
-            padding: 8px 20px;
-            display: flex;
-            justify-content: flex-end;
-            font-size: 15px;
-        }
-
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-        }
-
-        /* Main header */
-        .main-header {
-            background-color: #333;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px;
-        }
-
-        .left-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 28px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-right: 25px;
-        }
-
-        .search-container {
-            flex-grow: 0;
-            margin: 0 auto;
-            position: relative;
-            width: 600px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .right-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .right-nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Categories dropdown */
-        .categories-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .categories-button {
-            background: none;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 15px;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .categories-dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* Product Detail Page */
-        .breadcrumb {
-            max-width: 1200px;
-            margin: 20px auto 0;
-            padding: 0 20px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .breadcrumb a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .product-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: flex;
-            gap: 40px;
-        }
-
-        .product-gallery {
-            flex: 1;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .main-image {
-            width: 100%;
-            height: 400px;
-            background-color: #f6f6f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .main-image img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .product-price-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .product-current-price {
-            font-size: 26px;
-            font-weight: 700;
-            color: #4CAF50;
-        }
-
-        .product-original-price {
-            font-size: 18px;
-            color: #999;
-            text-decoration: line-through;
-            margin-left: 15px;
-        }
-
-        .product-discount {
-            background-color: #f44336;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-left: 15px;
-        }
-
-        .product-meta {
-            margin-bottom: 25px;
-        }
-
-        .meta-item {
-            display: flex;
-            margin-bottom: 10px;
-        }
-
-        .meta-label {
-            width: 120px;
-            font-weight: 500;
-            color: #666;
-        }
-
-        .meta-value {
-            color: #333;
-        }
-
-        .product-description {
-            margin-bottom: 30px;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .quantity-label {
-            margin-right: 15px;
-            font-weight: 500;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .quantity-btn {
-            background-color: #f5f5f5;
-            border: none;
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .quantity-btn:hover {
-            background-color: #e5e5e5;
-        }
-
-        .quantity-input {
-            width: 60px;
-            height: 40px;
-            border: none;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .add-to-cart-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 15px 25px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .add-to-cart-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .product-container {
-                flex-direction: column;
-            }
-
-            .main-image {
-                height: 300px;
-            }
-        }
-    </style>
+<head th:replace="fragments/header :: head">
 </head>
 <body>
-<!-- Top bar -->
-<div class="top-bar">
-    <a href="#">Sell on E-Shop</a>
-    <a href="#">Help & Contact</a>
-</div>
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
 
-<!-- Main header -->
-<header class="main-header">
-    <div class="left-section">
-        <a href="/" class="logo">E-Shop</a>
+    <!-- Breadcrumb -->
+    <div class="bg-light py-3">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${product.title}">Product Name</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
-        <div class="categories-dropdown">
-            <button class="categories-button">CATEGORIES ▼</button>
-            <div class="dropdown-content">
-                <a th:href="@{/products/type(type='Kitchen Appliances')}">Kitchen Appliances</a>
-                <a th:href="@{/products/type(type='Kitchenware')}">Kitchenware</a>
-                <a th:href="@{/products/type(type='Home Decor')}">Home Decor</a>
-                <a th:href="@{/products/type(type='Drinkware')}">Drinkware</a>
+    <!-- Product Detail Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Product Image -->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="product-images">
+                        <div class="main-image mb-4">
+                            <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}" 
+                                 src="https://via.placeholder.com/600x600" 
+                                 class="img-fluid rounded shadow-sm" alt="Product Image"
+                                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg'; this.onerror=function(){this.src='https://placehold.co/600x600?text=Product+Image';};"
+                                 id="mainImage"
+                                 style="max-height: 400px; width: 100%; object-fit: contain;">
+                        </div>
+                        <!-- Image placeholders for product with multiple views -->
+                        <div class="thumbnail-images d-flex gap-2">
+                            <div class="thumbnail-image">
+                                <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}" 
+                                     src="https://via.placeholder.com/150x150" 
+                                     class="img-fluid rounded cursor-pointer shadow-sm" alt="Product Thumbnail"
+                                     onerror="this.onerror=null; this.src='/images/products/default-product.jpg'; this.onerror=function(){this.src='https://placehold.co/150x150?text=Thumbnail';};"
+                                     onclick="changeMainImage(this.src)"
+                                     style="height: 80px; width: 80px; object-fit: cover;">
+                            </div>
+                            <!-- Additional image placeholders (if available) -->
+                            <div class="thumbnail-image" th:if="${product.imagePath != null}">
+                                <img th:src="@{${product.imagePath}}" 
+                                     src="https://via.placeholder.com/150x150" 
+                                     class="img-fluid rounded cursor-pointer shadow-sm" alt="Product Thumbnail"
+                                     onerror="this.onerror=null; this.src='/images/products/default-product.jpg'; this.onerror=function(){this.src='https://placehold.co/150x150?text=Thumbnail';};"
+                                     onclick="changeMainImage(this.src)"
+                                     style="height: 80px; width: 80px; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="col-lg-6">
+                    <div class="product-info">
+                        <h1 class="h2 mb-2 fw-bold" th:text="${product.title}">Product Name</h1>
+                        
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-success me-2" th:if="${product.source != null}">
+                                <span th:text="${product.source}">Brand</span>
+                            </span>
+                            <span class="text-muted" th:if="${product.productType != null}" th:text="${'Category: ' + product.productType}">Category: Kitchen</span>
+                        </div>
+                        
+                        <div class="product-price mb-4">
+                            <div th:if="${product.originalPrice != null}" class="d-flex align-items-center">
+                                <h2 class="fw-bold text-primary mb-0" 
+                                    th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}">$99.99</h2>
+                                <span class="original-price text-decoration-line-through ms-3 text-muted" 
+                                      th:text="${'$' + #numbers.formatDecimal(product.originalPrice, 1, 2)}">$129.99</span>
+                                <span class="discount-badge bg-danger text-white rounded px-2 py-1 ms-3" 
+                                      th:if="${product.discountPercentage != null}"
+                                      th:text="${'-' + product.discountPercentage + '%'}">-23%</span>
+                            </div>
+                            <h2 th:unless="${product.originalPrice != null}" class="fw-bold text-primary" 
+                                th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}">$129.99</h2>
+                        </div>
+                        
+                        <div class="product-description mb-4">
+                            <h5 class="fw-bold mb-2">Description</h5>
+                            <p class="text-muted" th:text="${product.description}">
+                                This is a sample product description. It contains all the details about the product,
+                                including its features, specifications, and benefits.
+                            </p>
+                        </div>
+                        
+                        <!-- Product Details if available -->
+                        <div class="product-details mb-4">
+                            <h5 class="fw-bold mb-2">Details</h5>
+                            <div class="row">
+                                <div class="col-md-6" th:if="${product.weight != null}">
+                                    <p class="mb-1"><strong>Weight:</strong> <span th:text="${product.weight}">0.5 kg</span></p>
+                                </div>
+                                <div class="col-md-6" th:if="${product.size != null}">
+                                    <p class="mb-1"><strong>Size:</strong> <span th:text="${product.size}">Medium</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quantity-selector mb-4">
+                            <h5 class="fw-bold mb-2">Quantity</h5>
+                            <div class="d-flex gap-2 mb-3">
+                                <div class="input-group" style="width: 130px;">
+                                    <button class="btn btn-outline-secondary" type="button" id="decrease-quantity">-</button>
+                                    <input type="number" class="form-control text-center" id="quantity" value="1" min="1">
+                                    <button class="btn btn-outline-secondary" type="button" id="increase-quantity">+</button>
+                                </div>
+                                <button id="add-to-cart" class="btn btn-primary flex-grow-1" th:data-product-id="${product.id}">Add to Cart</button>
+                                <button id="buy-now" class="btn btn-dark flex-grow-1" th:data-product-id="${product.id}">Buy Now</button>
+                            </div>
+                        </div>
+                        
+                        <div class="shipping-info p-3 bg-light rounded mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-truck text-primary me-2"></i>
+                                <span class="fw-medium">Free shipping</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-sync-alt text-primary me-2"></i>
+                                <span class="fw-medium">30-day returns</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>
+                                <span class="fw-medium">2-year warranty</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products (if available in the service) -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="mb-4">You May Also Like</h2>
+            <div class="row">
+                <!-- Dynamic related products -->
+                <div class="col-md-3 col-6 mb-4" th:each="relatedProduct : ${relatedProducts}" th:if="${relatedProduct.id != product.id}">
+                    <div class="card product-card h-100 border-0 shadow-sm">
+                        <div class="position-relative">
+                            <img th:src="@{'/images/products/' + ${relatedProduct.title} + '.jpg'}" 
+                                 class="card-img-top" th:alt="${relatedProduct.title}"
+                                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg'; this.onerror=function(){this.src='https://placehold.co/300x300?text=Product+Image';};"
+                                 style="height: 200px; object-fit: contain;">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-1" th:text="${relatedProduct.title}">Related Product</h5>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="fw-bold text-primary" th:text="${'$' + #numbers.formatDecimal(relatedProduct.price, 1, 2)}">$59.99</div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0 pt-0">
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{'/products/' + ${relatedProduct.id}}" class="btn btn-sm btn-outline-primary">View</a>
+                                <button class="btn btn-sm btn-primary add-to-cart-btn" 
+                                        th:data-id="${relatedProduct.id}" 
+                                        th:data-name="${relatedProduct.title}" 
+                                        th:data-price="${relatedProduct.price}">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- No related products message -->
+                <div class="col-12 text-center" th:if="${relatedProducts == null or relatedProducts.isEmpty()}">
+                    <p class="text-muted">No related products available</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add to Cart Success Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="cartToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Product added to your cart successfully!
+                <div class="mt-2 pt-2 border-top">
+                    <a href="/cart" class="btn btn-primary btn-sm">View Cart</a>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Continue Shopping</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products, categories or shops">
-        <button class="search-icon">🔍</button>
-    </div>
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
 
-    <div class="right-nav">
-        <a th:if="${session.loggedInUser == null}" th:href="@{/login}">Log In</a>
-        <a th:if="${session.loggedInUser != null}" th:href="@{/logout}">Log Out</a>
-        <a th:href="@{/cart}">🛒 Cart <span th:if="${session.cart != null && session.cart.totalItems > 0}"
-                                           th:text="${'(' + session.cart.totalItems + ')'}"></span></a>
-    </div>
-</header>
-
-<!-- Breadcrumb -->
-<div class="breadcrumb">
-    <a th:href="@{/}">Home</a> &gt;
-    <a th:href="@{/products/type(type=${product.productType})}" th:text="${product.productType}">Product Type</a> &gt;
-    <span th:text="${product.title}">Product Title</span>
-</div>
-
-<!-- Product Detail -->
-<div class="product-container">
-    <div class="product-gallery">
-        <div class="main-image">
-            <img th:src="@{'/images/products/' + ${product.title} + '.jpg'}"
-                 th:alt="${product.title}"
-                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
-        </div>
-
-    </div>
-
-    <div class="product-info">
-        <h1 class="product-title" th:text="${product.title}">Product Title</h1>
-
-        <div class="product-price-container">
-            <span class="product-current-price" th:text="${'$' + #numbers.formatDecimal(product.price, 1, 2)}">$40.00</span>
-            <span th:if="${product.originalPrice != null}" class="product-original-price" th:text="${'$' + #numbers.formatDecimal(product.originalPrice, 1, 2)}">$50.00</span>
-            <span th:if="${product.discountPercentage != null}" class="product-discount" th:text="${'-' + product.discountPercentage + '%'}">-20%</span>
-        </div>
-
-        <div class="product-meta">
-            <div class="meta-item">
-                <span class="meta-label">Brand:</span>
-                <span class="meta-value" th:text="${product.source}">Brand Name</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Weight:</span>
-                <span class="meta-value" th:text="${product.weight}">3 kg</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Dimensions:</span>
-                <span class="meta-value" th:text="${product.size}">30x25x20 cm</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Category:</span>
-                <span class="meta-value" th:text="${product.productType}">Kitchen Appliances</span>
-            </div>
-        </div>
-
-        <div class="product-description" th:text="${product.description}">
-            Product description goes here. This is a detailed description of the product with all its features and benefits.
-        </div>
-
-        <div class="quantity-selector">
-            <span class="quantity-label">Quantity:</span>
-            <div class="quantity-controls">
-                <button class="quantity-btn" onclick="decrementQuantity()">-</button>
-                <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="99">
-                <button class="quantity-btn" onclick="incrementQuantity()">+</button>
-            </div>
-        </div>
-
-        <button class="add-to-cart-btn" th:attr="data-id=${product.id}" onclick="addToCart()">Add to Cart</button>
-    </div>
-</div>
-
-<script>
-    function incrementQuantity() {
-        const input = document.getElementById('quantity');
-        const currentValue = parseInt(input.value);
-
-        if (currentValue < 99) {
-            input.value = currentValue + 1;
+    <!-- Scripts -->
+    <div th:replace="fragments/header :: scripts"></div>
+    
+    <script>
+        // Change main product image function
+        function changeMainImage(src) {
+            document.getElementById('mainImage').src = src;
         }
-    }
-
-    function decrementQuantity() {
-        const input = document.getElementById('quantity');
-        const currentValue = parseInt(input.value);
-
-        if (currentValue > 1) {
-            input.value = currentValue - 1;
-        }
-    }
-
-    function addToCart() {
-        const productId = document.querySelector('.add-to-cart-btn').getAttribute('data-id');
-        const quantity = parseInt(document.getElementById('quantity').value);
-
-        fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `productId=${productId}&quantity=${quantity}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification(data.message);
-                updateCartCount(data.totalItems);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error adding product to cart');
+        
+        // Quantity selector
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInput = document.getElementById('quantity');
+            const decreaseBtn = document.getElementById('decrease-quantity');
+            const increaseBtn = document.getElementById('increase-quantity');
+            
+            decreaseBtn.addEventListener('click', function() {
+                const currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+            });
+            
+            increaseBtn.addEventListener('click', function() {
+                const currentValue = parseInt(quantityInput.value);
+                quantityInput.value = currentValue + 1;
+            });
         });
-    }
-
-    function showNotification(message) {
-        const notification = document.getElementById('notification');
-        const notificationMessage = document.getElementById('notification-message');
-
-        notificationMessage.textContent = message;
-        notification.classList.add('show');
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    }
-
-    function updateCartCount(count) {
-        const cartLink = document.querySelector('.right-nav a[href="/cart"]');
-        if (count > 0) {
-            cartLink.innerHTML = `🛒 Cart (${count})`;
-        } else {
-            cartLink.innerHTML = '🛒 Cart';
+        
+        // Add to cart functionality
+        document.getElementById('add-to-cart').addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const quantity = document.getElementById('quantity').value;
+            
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `productId=${productId}&quantity=${quantity}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    alert('Product added to cart successfully!');
+                    // Update cart count in header if needed
+                } else {
+                    alert('Failed to add product to cart: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the product to cart.');
+            });
+        });
+        
+        // Buy Now functionality
+        document.getElementById('buy-now').addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            const quantity = document.getElementById('quantity').value;
+            
+            // Add to cart first
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `productId=${productId}&quantity=${quantity}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to cart page after successful addition
+                    window.location.href = '/cart/view';
+                } else {
+                    alert('Failed to add product to cart: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the product to cart.');
+            });
+        });
+    </script>
+    
+    <style>
+        .product-card:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
         }
-    }
-</script>
-
-<!-- Notification -->
-<div id="notification" class="notification">
-    <span id="notification-message"></span>
-</div>
-
-<style>
-    /* Notification */
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        transition: transform 0.3s, opacity 0.3s;
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-
-    .notification.show {
-        transform: translateY(0);
-        opacity: 1;
-    }
-</style>
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+        
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
 </body>
 </html>

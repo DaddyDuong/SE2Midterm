@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -25,18 +27,24 @@ public class HomeController {
         // Get regular products (without discount)
         List<Product> regularProducts = productService.getRegularProducts();
         model.addAttribute("regularProducts", regularProducts);
+        
+        // Get all products to display on homepage
+        List<Product> allProducts = productService.getAllProducts();
+        model.addAttribute("products", allProducts);
+        model.addAttribute("featuredProducts", allProducts);
+        
+        // Get fashion products (Men's Clothing, Women's Clothing, Accessories)
+        List<String> fashionCategories = Arrays.asList("Men's Clothing", "Women's Clothing", "Accessories");
+        List<Product> fashionProducts = allProducts.stream()
+                .filter(product -> fashionCategories.contains(product.getProductType()))
+                .collect(Collectors.toList());
+        model.addAttribute("fashionProducts", fashionProducts);
 
         return "Home/index";
     }
 
     @GetMapping("/product/{id}")
-    public String productDetail(@PathVariable Long id, Model model) {
-        Product product = productService.getProductById(id);
-        if (product == null) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("product", product);
-        return "product/detail";
+    public String redirectProductDetail(@PathVariable Long id) {
+        return "redirect:/products/" + id;
     }
 }

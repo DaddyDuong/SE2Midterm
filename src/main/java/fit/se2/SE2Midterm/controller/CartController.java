@@ -38,6 +38,14 @@ public class CartController {
         return "cart/view";
     }
 
+    // Add mapping for /view as well
+    @GetMapping("/view")
+    public String viewCartPage(Model model, HttpSession session) {
+        Cart cart = getCart(session);
+        model.addAttribute("cart", cart);
+        return "cart/view";
+    }
+
     // Add item to cart
     @PostMapping("/add")
     @ResponseBody

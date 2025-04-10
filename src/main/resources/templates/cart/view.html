@@ -1,643 +1,370 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="fragments/header :: head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - E-Shop</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-        }
-
-        /* Top bar */
-        .top-bar {
-            background-color: #222;
-            color: white;
-            padding: 8px 20px;
-            display: flex;
-            justify-content: flex-end;
-            font-size: 15px;
-        }
-
-        .top-bar a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-        }
-
-        /* Main header */
-        .main-header {
-            background-color: #333;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px;
-        }
-
-        .left-section {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            color: white;
-            font-size: 28px;
-            font-weight: 700;
-            text-decoration: none;
-            margin-right: 25px;
-        }
-
-        .search-container {
-            flex-grow: 0;
-            margin: 0 auto;
-            position: relative;
-            width: 600px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 12px 40px 12px 15px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #777;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .right-nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .right-nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Categories dropdown */
-        .categories-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .categories-button {
-            background: none;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 180px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 15px;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .categories-dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        /* Cart Page Styles */
-        .cart-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .empty-cart {
-            background-color: white;
-            border-radius: 8px;
-            padding: 50px;
+        .qty-input {
+            width: 65px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
-        .empty-cart-message {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .continue-shopping-btn {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-        }
-
-        .continue-shopping-btn:hover {
-            background-color: #45a049;
-        }
-
-        .cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-table th {
-            background-color: #f5f5f5;
-            padding: 15px;
-            text-align: left;
-            font-weight: 500;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .cart-table td {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            vertical-align: middle;
-        }
-
-        .product-col {
-            display: flex;
-            align-items: center;
-        }
-
-        .product-image {
-            width: 80px;
-            height: 80px;
-            background-color: #f6f6f6;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .product-image img {
-            max-width: 100%;
-            max-height: 100%;
+        .product-img {
+            width: 120px;
+            height: 120px;
             object-fit: cover;
         }
-
-        .product-details h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #333;
+        .empty-cart-img {
+            max-width: 200px;
+            opacity: 0.5;
         }
-
-        .product-details .product-info {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-            width: fit-content;
-        }
-
-        .quantity-btn {
-            background-color: #f5f5f5;
-            border: none;
-            width: 30px;
-            height: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .quantity-btn:hover {
-            background-color: #e5e5e5;
-        }
-
-        .quantity-input {
-            width: 50px;
-            height: 30px;
-            border: none;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .price {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .subtotal {
-            font-weight: 700;
-            color: #4CAF50;
-        }
-
-        .remove-btn {
-            background: none;
-            border: none;
-            color: #f44336;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .cart-actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .clear-cart-btn {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        .clear-cart-btn:hover {
-            background-color: #d32f2f;
-        }
-
-        .cart-summary {
-            margin-top: 30px;
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .summary-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .summary-label {
-            color: #666;
-        }
-
-        .summary-value {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .total-row {
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-            margin-top: 15px;
-            font-size: 18px;
-        }
-
-        .total-value {
-            font-weight: 700;
-            color: #4CAF50;
-        }
-
-        .btn-checkout {
-            display: block;
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-checkout:hover {
-            background-color: #45a049;
-        }
-
-        /* Notification */
-        .notification {
+        .toast-container {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: transform 0.3s, opacity 0.3s;
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
-<!-- Top bar -->
-<div class="top-bar">
-    <a href="#">Sell on E-Shop</a>
-    <a href="#">Help & Contact</a>
+
+<!-- Header Fragment -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- Breadcrumb Section -->
+<div class="container py-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+        </ol>
+    </nav>
 </div>
 
-<!-- Main header -->
-<header class="main-header">
-    <div class="left-section">
-        <a href="/" class="logo">E-Shop</a>
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
-        <div class="categories-dropdown">
-            <button class="categories-button">CATEGORIES ▼</button>
-            <div class="dropdown-content">
-                <a th:href="@{/products/type(type='Kitchen Appliances')}">Kitchen Appliances</a>
-                <a th:href="@{/products/type(type='Kitchenware')}">Kitchenware</a>
-                <a th:href="@{/products/type(type='Home Decor')}">Home Decor</a>
-                <a th:href="@{/products/type(type='Drinkware')}">Drinkware</a>
-            </div>
-        </div>
+<!-- Cart Section -->
+<div class="container py-5">
+    <h2 class="mb-4">Your Shopping Cart</h2>
+    
+    <!-- Empty Cart Message -->
+    <div th:if="${cart == null || cart.isEmpty()}" class="text-center py-5">
+        <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" alt="Empty Cart" class="empty-cart-img mb-4">
+        <h3>Your cart is empty</h3>
+        <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+        <a th:href="@{/}" class="btn btn-primary">Continue Shopping</a>
     </div>
-
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search for products, categories or shops">
-        <button class="search-icon">🔍</button>
-    </div>
-
-    <div class="right-nav">
-        <a th:if="${session.loggedInUser == null}" th:href="@{/login}">Log In</a>
-        <a th:if="${session.loggedInUser != null}" th:href="@{/logout}">Log Out</a>
-        <a th:href="@{/cart}">🛒 Cart <span th:if="${session.cart != null && session.cart.totalItems > 0}"
-                                           th:text="${'(' + session.cart.totalItems + ')'}"></span></a>
-    </div>
-</header>
-
-<div class="cart-container">
-    <h1 class="page-title">Shopping Cart</h1>
-
-    <!-- Empty cart message -->
-    <div th:if="${cart.isEmpty()}" class="empty-cart">
-        <p class="empty-cart-message">Your shopping cart is empty</p>
-        <a href="/" class="continue-shopping-btn">Continue Shopping</a>
-    </div>
-
-    <!-- Cart with items -->
-    <div th:unless="${cart.isEmpty()}">
-        <table class="cart-table">
-            <thead>
-            <!-- Table header remains the same -->
-            </thead>
-            <tbody>
-            <tr th:each="item : ${cart.items}">
-                <td>
-                    <div class="product-col">
-                        <div class="product-image">
-                            <!-- Hiển thị ảnh sản phẩm theo title -->
-                            <img th:src="@{'/images/products/' + ${item.product.title} + '.jpg'}"
-                                 th:alt="${item.product.title}"
-                                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
-                        </div>
-                        <div class="product-details">
-                            <h3 th:text="${item.product.title}">Product Title</h3>
-                            <div class="product-info">
-                                <span th:text="${'Brand: ' + item.product.source}">Brand: Example</span>
+    
+    <div th:if="${cart != null && !cart.isEmpty()}" class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Cart Items</h5>
+                        <span class="badge bg-primary rounded-pill" th:text="${cart.totalItems + ' items'}">3 items</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Cart Item -->
+                    <div th:each="item, status : ${cart.items}" class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 col-4">
+                                    <img th:src="@{'/images/products/' + ${item.product.title} + '.jpg'}" 
+                                         alt="Product" class="img-fluid rounded product-img"
+                                         th:alt="${item.product.title}"
+                                         onerror="this.onerror=null; this.src='/images/products/default-product.jpg'; this.onerror=function(){this.src='https://placehold.co/300x300?text=Product+Image';};">
+                                </div>
+                                <div class="col-md-4 col-8">
+                                    <h5 class="product-title" th:text="${item.product.title}">Product Title</h5>
+                                    <p class="text-muted mb-0" th:if="${item.product.source != null}" th:text="${'Source: ' + item.product.source}">Source: Brand</p>
+                                    <p class="mb-0" th:if="${item.product.size != null}" th:text="${'Size: ' + item.product.size}">Size: L</p>
+                                </div>
+                                <div class="col-md-2 col-4 mt-3 mt-md-0">
+                                    <span class="fw-bold text-primary" th:text="${'$' + #numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')}">$99.99</span>
+                                </div>
+                                <div class="col-md-2 col-4 mt-3 mt-md-0">
+                                    <div class="input-group qty-input-group">
+                                        <button class="btn btn-outline-secondary btn-sm decrease-quantity" type="button" th:data-index="${status.index}" th:data-product-id="${item.product.id}">-</button>
+                                        <input type="number" class="form-control form-control-sm qty-input" th:id="${'quantity-' + status.index}" 
+                                               th:name="${'quantity-' + status.index}" th:value="${item.quantity}" min="1" max="10"
+                                               th:data-product-id="${item.product.id}">
+                                        <button class="btn btn-outline-secondary btn-sm increase-quantity" type="button" th:data-index="${status.index}" th:data-product-id="${item.product.id}">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-4 mt-3 mt-md-0 text-end">
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-item" th:data-product-id="${item.product.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <span class="fw-bold ms-2" th:text="${'$' + #numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')}">$199.98</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </td>
-
-                <td class="price" th:text="${'$' + #numbers.formatDecimal(item.product.price, 1, 2)}">$40.00</td>
-                <td>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn" th:attr="data-id=${item.product.id}" onclick="updateQuantity(this, -1)">-</button>
-                        <input type="number" class="quantity-input" th:value="${item.quantity}" min="1" max="99"
-                               th:attr="data-id=${item.product.id}" onchange="quantityChanged(this)">
-                        <button class="quantity-btn" th:attr="data-id=${item.product.id}" onclick="updateQuantity(this, 1)">+</button>
+                    
+                    <!-- Cart Actions -->
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a th:href="@{/}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                        </a>
+                        <button type="button" class="btn btn-primary" id="updateCartBtn">
+                            <i class="fas fa-sync-alt me-2"></i> Update Cart
+                        </button>
                     </div>
-                </td>
-                <td class="subtotal" th:text="${'$' + #numbers.formatDecimal(item.subtotal, 1, 2)}">$80.00</td>
-                <td>
-                    <button class="remove-btn" th:attr="data-id=${item.product.id}" onclick="removeItem(this)">×</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="cart-actions">
-            <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
-            <a href="/" class="continue-shopping-btn">Continue Shopping</a>
+                </div>
+            </div>
+            
+            <!-- Coupon Code -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Apply Coupon</h5>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="couponCode" name="couponCode" placeholder="Enter coupon code">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary w-100" id="applyCouponBtn">Apply Coupon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="cart-summary">
-            <h2 class="summary-title">Order Summary</h2>
-            <div class="summary-row">
-                <span class="summary-label">Items:</span>
-                <span class="summary-value" th:text="${cart.totalItems}">3</span>
+        
+        <!-- Cart Summary -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}">$99.99</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tax (10%):</span>
+                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 0, 'COMMA', 2, 'POINT')}">$9.99</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <strong>Total:</strong>
+                        <strong class="text-primary fs-5" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 0, 'COMMA', 2, 'POINT')}">$109.98</strong>
+                    </div>
+                    <a th:href="@{/checkout}" class="btn btn-primary w-100 py-2">Proceed to Checkout</a>
+                </div>
             </div>
-            <div class="summary-row total-row">
-                <span class="summary-label">Total:</span>
-                <span class="total-value" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 1, 2)}">$120.00</span>
+            
+            <!-- Additional Information -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Order Information</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-truck text-primary me-3 fa-2x"></i>
+                        <div>
+                            <h6 class="mb-1">Free Shipping</h6>
+                            <p class="mb-0 text-muted small">For orders over $100</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-undo text-primary me-3 fa-2x"></i>
+                        <div>
+                            <h6 class="mb-1">30 Days Return</h6>
+                            <p class="mb-0 text-muted small">If goods have problems</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-lock text-primary me-3 fa-2x"></i>
+                        <div>
+                            <h6 class="mb-1">Secure Payment</h6>
+                            <p class="mb-0 text-muted small">100% secure payment</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <a th:if="${!cart.isEmpty()}" th:href="@{/checkout}" class="btn-checkout">Proceed to Checkout</a>
         </div>
     </div>
 </div>
 
-<!-- Notification -->
-<div id="notification" class="notification">
-    <span id="notification-message"></span>
-</div>
+<!-- Footer Fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Scripts -->
+<div th:replace="fragments/header :: scripts"></div>
 
 <script>
-    // Show notification
-    function showNotification(message) {
-        const notification = document.getElementById('notification');
-        const notificationMessage = document.getElementById('notification-message');
-
-        notificationMessage.textContent = message;
-        notification.classList.add('show');
-
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    }
-
-    // Update quantity when + or - buttons are clicked
-    function updateQuantity(button, change) {
-        const productId = button.getAttribute('data-id');
-        const input = button.parentElement.querySelector('.quantity-input');
-        const currentQuantity = parseInt(input.value);
-        const newQuantity = currentQuantity + change;
-
-        if (newQuantity > 0 && newQuantity <= 99) {
-            input.value = newQuantity;
-            updateCartItemQuantity(productId, newQuantity);
-        }
-    }
-
-    // Update quantity when input is changed
-    function quantityChanged(input) {
-        const productId = input.getAttribute('data-id');
-        const quantity = parseInt(input.value);
-
-        if (quantity > 0 && quantity <= 99) {
-            updateCartItemQuantity(productId, quantity);
-        } else {
-            // Reset to valid value
-            if (quantity < 1) input.value = 1;
-            if (quantity > 99) input.value = 99;
-            updateCartItemQuantity(productId, parseInt(input.value));
-        }
-    }
-
-    // Remove item from cart
-    function removeItem(button) {
-        const productId = button.getAttribute('data-id');
-
-        fetch('/cart/remove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `productId=${productId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Remove row from table
-                button.closest('tr').remove();
-
-                // Update cart count
-                updateCartCount(data.totalItems);
-
-                // If cart is now empty, reload page to show empty cart message
-                if (data.totalItems === 0) {
-                    location.reload();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Quantity increase/decrease handlers
+        document.querySelectorAll('.increase-quantity').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = this.getAttribute('data-index');
+                const productId = this.getAttribute('data-product-id');
+                const inputElement = document.getElementById('quantity-' + index);
+                const currentValue = parseInt(inputElement.value);
+                
+                if (currentValue < 10) {
+                    inputElement.value = currentValue + 1;
+                    updateCartItem(productId, currentValue + 1);
                 }
-
-                showNotification('Item removed from cart');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+            });
         });
-    }
-
-    // Update cart item quantity
-    function updateCartItemQuantity(productId, quantity) {
-        fetch('/cart/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `productId=${productId}&quantity=${quantity}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update subtotal and total
-                location.reload(); // Simple approach to refresh all values
-
-                showNotification('Cart updated');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+        
+        document.querySelectorAll('.decrease-quantity').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = this.getAttribute('data-index');
+                const productId = this.getAttribute('data-product-id');
+                const inputElement = document.getElementById('quantity-' + index);
+                const currentValue = parseInt(inputElement.value);
+                
+                if (currentValue > 1) {
+                    inputElement.value = currentValue - 1;
+                    updateCartItem(productId, currentValue - 1);
+                }
+            });
         });
-    }
-
-    // Clear cart
-    function clearCart() {
-        if (confirm('Are you sure you want to clear your cart?')) {
-            fetch('/cart/clear', {
-                method: 'POST'
+        
+        // Remove item handlers
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                removeCartItem(productId);
+            });
+        });
+        
+        // Update cart button handler
+        document.getElementById('updateCartBtn').addEventListener('click', function() {
+            // Collect all items and quantities
+            const updates = [];
+            document.querySelectorAll('.qty-input').forEach(input => {
+                updates.push({
+                    productId: input.getAttribute('data-product-id'),
+                    quantity: input.value
+                });
+            });
+            
+            // Update all at once
+            updateAllCartItems(updates);
+        });
+        
+        // Function to show non-intrusive toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            const toastContent = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toast.innerHTML = toastContent;
+            toastContainer.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            bsToast.show();
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', function() {
+                toast.remove();
+            });
+        }
+        
+        // Function to update cart item quantity
+        function updateCartItem(productId, quantity) {
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `productId=${productId}&quantity=${quantity}`
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    showToast('Cart updated successfully');
+                    // Reload page to reflect changes
+                    window.location.reload();
+                } else {
+                    showToast('Error updating cart', 'danger');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                showToast('An error occurred while updating cart', 'danger');
             });
         }
-    }
-
-    // Update cart count in header
-    function updateCartCount(count) {
-        const cartLink = document.querySelector('.right-nav a[href="/cart"]');
-        if (count > 0) {
-            cartLink.innerHTML = `🛒 Cart (${count})`;
-        } else {
-            cartLink.innerHTML = '🛒 Cart';
+        
+        // Function to remove cart item
+        function removeCartItem(productId) {
+            fetch('/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `productId=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Item removed from cart');
+                    // Reload page to reflect changes
+                    window.location.reload();
+                } else {
+                    showToast('Error removing item from cart', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred while removing item', 'danger');
+            });
         }
-    }
+        
+        // Function to update all cart items at once
+        function updateAllCartItems(updates) {
+            // Create a promise for each update
+            const updatePromises = updates.map(update => {
+                return fetch('/cart/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `productId=${update.productId}&quantity=${update.quantity}`
+                }).then(response => response.json());
+            });
+            
+            // Wait for all updates to complete
+            Promise.all(updatePromises)
+                .then(results => {
+                    showToast('Cart updated successfully');
+                    // Reload page to reflect changes
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred while updating cart', 'danger');
+                });
+        }
+    });
 </script>
+
 </body>
 </html>

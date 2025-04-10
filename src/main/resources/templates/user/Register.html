@@ -1,135 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="/layouts/_layout">
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
   <meta charset="UTF-8">
   <title>Register</title>
-  <style>
-    .register-container {
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 30px;
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .register-title {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-
-    .btn-register {
-      width: 100%;
-      padding: 12px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .btn-register:hover {
-      background-color: #45a049;
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .login-link a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-
-    /* Notification boxes */
-    .notification {
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 4px;
-      font-size: 14px;
-      position: relative;
-    }
-
-    .notification-error {
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
-      color: #721c24;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      color: inherit;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-  </style>
 </head>
 <body>
-<div layout:fragment="content" class="register-container">
-  <h2 class="register-title">Create Account</h2>
+<!-- Header -->
+<div th:replace="fragments/header :: header"></div>
 
-  <!-- Error notification -->
-  <div th:if="${error}" class="notification notification-error">
-    <span th:text="${error}"></span>
-    <button class="close-btn" onclick="this.parentElement.style.display='none'">×</button>
-  </div>
+<div class="container py-5 min-vh-100 d-flex align-items-center">
+  <div class="row justify-content-center w-100">
+    <div class="col-md-6 col-lg-5">
+      <div class="card border-0 shadow rounded-3">
+        <div class="card-body p-4 p-md-5">
+          <div class="text-center mb-4">
+            <h2 class="fw-bold">Create Account</h2>
+            <p class="text-muted">Join our community and shop with ease</p>
+          </div>
 
-  <form th:action="@{/register}" th:object="${user}" method="post">
-    <div class="form-group">
-      <label for="username">Username *</label>
-      <input type="text" id="username" class="form-control" th:field="*{username}" required>
+          <!-- Error notification -->
+          <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+
+          <form th:action="@{/user/register}" th:object="${user}" method="post">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="username" th:field="*{username}" 
+                     placeholder="Username" required>
+              <label for="username">Username</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control" id="password" th:field="*{password}" 
+                     placeholder="Password" required>
+              <label for="password">Password</label>
+              <div class="form-text small text-muted mt-1">
+                Password should be at least 6 characters long
+              </div>
+            </div>
+
+            <div class="form-floating mb-4">
+              <input type="email" class="form-control" id="email" th:field="*{email}" 
+                     placeholder="Email" required>
+              <label for="email">Email</label>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg py-3 fw-semibold">
+                Create Account
+              </button>
+            </div>
+            
+            <div class="text-center mt-4">
+              <p class="mb-0">Already have an account? 
+                <a th:href="@{/user/login}" class="text-primary fw-bold">Sign In</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label for="password">Password *</label>
-      <input type="password" id="password" class="form-control" th:field="*{password}" required>
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email *</label>
-      <input type="email" id="email" class="form-control" th:field="*{email}" required>
-    </div>
-
-    <button type="submit" class="btn-register">Register</button>
-  </form>
-
-  <div class="login-link">
-    Already have an account? <a th:href="@{/login}">Login here</a>
   </div>
 </div>
+
+<!-- Footer -->
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- Scripts -->
+<div th:replace="fragments/header :: scripts"></div>
 </body>
 </html>

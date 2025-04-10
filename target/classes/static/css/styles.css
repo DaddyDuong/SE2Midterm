@@ -1,0 +1,46 @@
+/* Footer Styles */
+.social-icons {
+    display: flex;
+    margin-top: 15px;
+}
+
+.social-icon {
+    color: #fff;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px);
+    color: #f8f9fa;
+}
+
+.payment-methods img {
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-methods img:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.footer-widget h3 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-widget h3:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background-color: #f8f9fa;
+} 
