@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="fragments/header :: head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - E-Shop</title>
@@ -13,150 +13,304 @@
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 10px;
+            transition: all 0.3s ease;
         }
         .payment-method-card.selected {
-            border-color: #28a745;
+            border-color: #0d6efd;
             background-color: #f8f9fa;
+            box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
         }
         .payment-method-card i {
             font-size: 24px;
-            margin-right: 10px;
+            margin-right: 15px;
+        }
+        .checkout-step {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .product-img-small {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .payment-option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .payment-option:hover {
+            background-color: #f8f9fa;
+        }
+        .payment-option .form-check-input:checked ~ label {
+            font-weight: bold;
+        }
+        .payment-option .form-check-input:checked ~ label .payment-icon {
+            transform: scale(1.1);
+        }
+        .payment-option .payment-icon {
+            font-size: 1.5rem;
+            transition: transform 0.2s ease;
+        }
+        .form-check-input:checked + .form-check-label {
+            color: #0d6efd;
+        }
+        .payment-option input {
+            margin-top: 1.2rem;
+            margin-left: 0.5rem;
+        }
+        .card-header {
+            background-color: #4169E1 !important;
+            color: white;
+            font-weight: 500;
+        }
+        .btn-success {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .btn-success:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+        .cart-item:last-child {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        /* Button pulse animation */
+        .btn-pulse {
+            animation: pulse 1.5s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
         }
     </style>
 </head>
 <body>
 
-<!-- Header Fragment -->
-<div th:replace="fragments/footer :: header"></div>
+<!-- Header -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
 <!-- Breadcrumb Section -->
 <div class="container py-3">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/cart">Shopping Cart</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/cart}">Shopping Cart</a></li>
             <li class="breadcrumb-item active" aria-current="page">Checkout</li>
         </ol>
     </nav>
 </div>
 
+<!-- Alert Messages -->
+<div class="container">
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
 <!-- Checkout Section -->
-<div class="container py-5">
+<div class="container py-4">
+    <h2 class="mb-4">Complete Your Order</h2>
+    
     <div class="row">
         <!-- Checkout Information -->
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Shipping Information</h4>
-                </div>
-                <div class="card-body">
-                    <!-- Checkout Form -->
-                    <form id="checkoutForm" th:action="@{/checkout/process}" method="post">
+        <div class="col-lg-8">
+            <form id="checkoutForm" th:action="@{/checkout/process}" method="post">
+                <!-- Shipping Information -->
+                <div class="card checkout-step mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shipping-fast me-2"></i>
+                            Shipping Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                <label for="shippingName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="shippingName" name="shippingName" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="shippingAddress" class="form-label">Street Address</label>
+                            <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="shippingCity" class="form-label">City</label>
+                                <input type="text" class="form-control" id="shippingCity" name="shippingCity" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="shippingPostalCode" class="form-label">Postal Code</label>
+                                <input type="text" class="form-control" id="shippingPostalCode" name="shippingPostalCode" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="shippingCountry" class="form-label">Country</label>
+                                <select class="form-select" id="shippingCountry" name="shippingCountry" required>
+                                    <option value="">Choose...</option>
+                                    <option value="Vietnam" selected>Vietnam</option>
+                                    <option value="United States">United States</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Australia">Australia</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
                             <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="For delivery questions" required>
                         </div>
-                        
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+                <div class="card checkout-step">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Payment Method
+                        </h5>
+                    </div>
+                    <div class="card-body">
                         <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
+                            <div class="form-check payment-option border rounded p-3 mb-2">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash" checked>
+                                <label class="form-check-label d-flex align-items-center" for="cashPayment">
+                                    <span class="payment-icon me-3">💵</span>
+                                    <div>
+                                        <div class="fw-bold">Cash on Delivery</div>
+                                        <div class="text-muted small">Pay when you receive your order</div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check payment-option border rounded p-3 mb-2">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="credit">
+                                <label class="form-check-label d-flex align-items-center" for="cardPayment">
+                                    <span class="payment-icon me-3">💳</span>
+                                    <div>
+                                        <div class="fw-bold">Credit/Debit Card</div>
+                                        <div class="text-muted small">Visa, Mastercard, American Express</div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check payment-option border rounded p-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="paypalPayment" value="paypal">
+                                <label class="form-check-label d-flex align-items-center" for="paypalPayment">
+                                    <span class="payment-icon me-3">🅿️</span>
+                                    <div>
+                                        <div class="fw-bold">PayPal</div>
+                                        <div class="text-muted small">Pay securely with PayPal</div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" id="city" name="city" required>
+                        <!-- Credit Card Information - Hiển thị khi chọn thanh toán bằng thẻ -->
+                        <div id="creditCardDetails" class="payment-details mt-4 p-3 border rounded" style="display: none;">
+                            <h6 class="mb-3">Credit Card Information</h6>
+                            <div class="mb-3">
+                                <label for="cardName" class="form-label">Name on Card</label>
+                                <input type="text" class="form-control" id="cardName" name="cardName">
+                                <div class="invalid-feedback">Please provide the name on your card.</div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="state" class="form-label">State/Province</label>
-                                <input type="text" class="form-control" id="state" name="state" required>
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX">
+                                <div class="invalid-feedback">Please provide a valid card number.</div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="zip" class="form-label">ZIP Code</label>
-                                <input type="text" class="form-control" id="zip" name="zip" required>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardExpiry" class="form-label">Expiration Date</label>
+                                    <input type="text" class="form-control" id="cardExpiry" name="cardExpiry" placeholder="MM/YY">
+                                    <div class="invalid-feedback">Please provide a valid expiration date.</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardCvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cardCvv" name="cardCvv" placeholder="123">
+                                    <div class="invalid-feedback">Please provide a valid CVV code.</div>
+                                </div>
                             </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="confirmCardBtn" class="btn btn-primary">Confirm Card</button>
+                            </div>
+                            <div id="cardConfirmationMessage" class="mt-3" style="display: none;"></div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="notes" class="form-label">Order Notes (optional)</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Payment Method</h4>
-                </div>
-                <div class="card-body">
-                    <div class="payment-method-card selected" onclick="selectPaymentMethod(this, 'cash')">
-                        <div class="d-flex align-items-center">
-                            <input type="radio" name="paymentMethod" value="cash" checked hidden>
-                            <i class="fas fa-money-bill text-success"></i>
-                            <div>
-                                <h5 class="mb-0">Cash on Delivery</h5>
-                                <p class="mb-0 text-muted">Pay when you receive your order</p>
+                        <!-- PayPal Information - Hiển thị khi chọn thanh toán bằng PayPal -->
+                        <div id="paypalDetails" class="payment-details mt-4 p-3 border rounded" style="display: none;">
+                            <h6 class="mb-3">PayPal Account</h6>
+                            <div class="mb-3">
+                                <label for="paypalEmail" class="form-label">PayPal Email</label>
+                                <input type="email" class="form-control" id="paypalEmail" name="paypalEmail">
+                                <div class="invalid-feedback">Please provide a valid PayPal email.</div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-method-card" onclick="selectPaymentMethod(this, 'credit')">
-                        <div class="d-flex align-items-center">
-                            <input type="radio" name="paymentMethod" value="credit" hidden>
-                            <i class="fas fa-credit-card text-primary"></i>
-                            <div>
-                                <h5 class="mb-0">Credit/Debit Card</h5>
-                                <p class="mb-0 text-muted">Visa, Mastercard, American Express</p>
+                            <div class="mb-3">
+                                <label for="paypalPassword" class="form-label">PayPal Password</label>
+                                <input type="password" class="form-control" id="paypalPassword" name="paypalPassword">
+                                <div class="invalid-feedback">Please enter your PayPal password.</div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-method-card" onclick="selectPaymentMethod(this, 'paypal')">
-                        <div class="d-flex align-items-center">
-                            <input type="radio" name="paymentMethod" value="paypal" hidden>
-                            <i class="fab fa-paypal text-info"></i>
-                            <div>
-                                <h5 class="mb-0">PayPal</h5>
-                                <p class="mb-0 text-muted">Pay securely with PayPal</p>
+                            <div class="d-grid gap-2">
+                                <button type="button" id="confirmPaypalBtn" class="btn btn-primary">Confirm PayPal</button>
                             </div>
+                            <div id="paypalConfirmationMessage" class="mt-3" style="display: none;"></div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
         
         <!-- Order Summary -->
-        <div class="col-md-4">
-            <div class="card">
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Order Summary</h4>
+                    <h5 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>
+                        Order Summary
+                    </h5>
                 </div>
                 <div class="card-body">
+                    <!-- Items in Cart -->
                     <div class="mb-4">
-                        <!-- Cart Items Summary -->
-                        <div th:each="item : ${cart.items}" class="d-flex justify-content-between mb-2">
-                            <div>
-                                <span th:text="${item.product.title}">Product Title</span>
-                                <span class="text-muted">x<span th:text="${item.quantity}">1</span></span>
+                        <h6 class="mb-3 text-muted">Items in Your Cart</h6>
+                        <div class="cart-items-container">
+                            <div th:each="item : ${cart.items}" class="cart-item mb-3 pb-3 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="product-img-container" style="width: 80px; height: 80px; overflow: hidden;">
+                                        <img th:src="@{'/images/products/' + ${item.product.title} + '.jpg'}" 
+                                             class="img-fluid rounded me-3"
+                                             th:alt="${item.product.title}"
+                                             style="width: 100%; height: 100%; object-fit: cover;"
+                                             onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
+                                    </div>
+                                    <div class="ms-3 flex-grow-1">
+                                        <h6 class="mb-1" th:text="${item.product.title}">Product Name</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="text-muted small">
+                                                <span>Qty: </span>
+                                                <span th:text="${item.quantity}">1</span>
+                                            </div>
+                                            <div class="fw-bold text-end" th:text="${'$' + #numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')}">$99.99</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <span th:text="${#numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')} + ' VND'">$99.99</span>
                         </div>
                     </div>
                     
@@ -165,25 +319,25 @@
                     <!-- Totals -->
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span th:text="${#numbers.formatDecimal(cart.subtotal, 0, 'COMMA', 2, 'POINT')} + ' VND'">$199.98</span>
+                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}">$199.98</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Shipping:</span>
-                        <span th:text="${#numbers.formatDecimal(cart.shippingCost, 0, 'COMMA', 2, 'POINT')} + ' VND'">$10.00</span>
+                        <span>Free</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
-                        <span>VAT (10%):</span>
-                        <span th:text="${#numbers.formatDecimal(cart.tax, 0, 'COMMA', 2, 'POINT')} + ' VND'">$19.99</span>
+                        <span>Tax (10%):</span>
+                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 0, 'COMMA', 2, 'POINT')}">$19.99</span>
                     </div>
                     
                     <div class="d-flex justify-content-between mb-3">
-                        <strong>Total:</strong>
-                        <strong class="text-primary" th:text="${#numbers.formatDecimal(cart.total, 0, 'COMMA', 2, 'POINT')} + ' VND'">$229.97</strong>
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold text-primary fs-5" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 0, 'COMMA', 2, 'POINT')}">$229.97</span>
                     </div>
                     
                     <!-- Place Order Button -->
-                    <button type="button" class="btn btn-primary w-100" onclick="document.getElementById('checkoutForm').submit()">
-                        Place Order <i class="fas fa-arrow-right ms-2"></i>
+                    <button type="button" id="completeOrderBtn" class="btn btn-success w-100 py-3 fw-bold d-flex align-items-center justify-content-center">
+                        Complete Order <i class="fas fa-arrow-right ms-2"></i>
                     </button>
                     
                     <div class="mt-3">
@@ -195,19 +349,19 @@
             </div>
             
             <!-- Secure Checkout Info -->
-            <div class="mt-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mb-3 text-center">
-                            <i class="fas fa-lock text-success me-2"></i>
-                            <span>Secure Checkout</span>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-lock text-success me-3"></i>
+                            <h6 class="mb-0">Secure Checkout</h6>
                         </div>
-                        <div class="d-flex justify-content-center">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png" alt="Visa" height="30" class="me-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/200px-Mastercard_2019_logo.svg.png" alt="Mastercard" height="30" class="me-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/200px-American_Express_logo_%282018%29.svg.png" alt="Amex" height="30" class="me-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/200px-PayPal.svg.png" alt="PayPal" height="30">
-                        </div>
+                        <p class="text-muted small mb-0">All information is encrypted and securely transmitted.</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/200px-Visa_Inc._logo.svg.png" alt="Visa" height="25" class="me-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Mastercard_2019_logo.svg/200px-Mastercard_2019_logo.svg.png" alt="Mastercard" height="25" class="me-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/200px-PayPal.svg.png" alt="PayPal" height="25">
                     </div>
                 </div>
             </div>
@@ -221,32 +375,336 @@
 <!-- Bootstrap and JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function selectPaymentMethod(element, method) {
-        // Remove selected class from all payment methods
-        document.querySelectorAll('.payment-method-card').forEach(card => {
-            card.classList.remove('selected');
+    // Xử lý Payment Method
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const creditCardDetails = document.getElementById('creditCardDetails');
+        const paypalDetails = document.getElementById('paypalDetails');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const completeOrderBtn = document.getElementById('completeOrderBtn');
+        const confirmCardBtn = document.getElementById('confirmCardBtn');
+        const confirmPaypalBtn = document.getElementById('confirmPaypalBtn');
+        const cardConfirmationMessage = document.getElementById('cardConfirmationMessage');
+        const paypalConfirmationMessage = document.getElementById('paypalConfirmationMessage');
+        let isCreditCardConfirmed = false;
+        let isPaypalConfirmed = false;
+        
+        // Hàm validate form
+        function validateForm() {
+            let isValid = true;
+            
+            // Reset tất cả trạng thái lỗi
+            document.querySelectorAll('.is-invalid').forEach(field => {
+                field.classList.remove('is-invalid');
+            });
+            
+            // Validate thông tin shipping
+            const requiredFields = [
+                'shippingName', 'email', 'shippingAddress', 
+                'shippingCity', 'shippingPostalCode', 'shippingCountry', 'phone'
+            ];
+            
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+            
+            // Kiểm tra định dạng email
+            const emailInput = document.getElementById('email');
+            if (emailInput.value.trim() && !emailInput.value.includes('@')) {
+                emailInput.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate thông tin thanh toán nếu là thẻ hoặc paypal
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            
+            if (paymentMethod === 'credit') {
+                if (!isCreditCardConfirmed) {
+                    showToast('Please confirm your card information first', 'warning');
+                    creditCardDetails.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    confirmCardBtn.classList.add('btn-pulse');
+                    setTimeout(() => confirmCardBtn.classList.remove('btn-pulse'), 2000);
+                    return false;
+                }
+            } else if (paymentMethod === 'paypal') {
+                if (!isPaypalConfirmed) {
+                    showToast('Please confirm your PayPal information first', 'warning');
+                    paypalDetails.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    confirmPaypalBtn.classList.add('btn-pulse');
+                    setTimeout(() => confirmPaypalBtn.classList.remove('btn-pulse'), 2000);
+                    return false;
+                }
+            }
+            
+            // Hiển thị thông báo lỗi tổng quát nếu có
+            if (!isValid) {
+                // Tạo thông báo toast cho người dùng
+                showToast('Please fill in all required fields', 'danger');
+                
+                // Cuộn đến trường lỗi đầu tiên
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // Hàm hiển thị thông báo toast
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+            
+            const toastBody = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            toastEl.innerHTML = toastBody;
+            toastContainer.appendChild(toastEl);
+            
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000
+            });
+            
+            toast.show();
+            
+            // Xóa toast khỏi DOM sau khi ẩn
+            toastEl.addEventListener('hidden.bs.toast', function() {
+                toastEl.remove();
+            });
+        }
+        
+        // Xử lý sự kiện click cho nút Complete Order
+        completeOrderBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                checkoutForm.submit();
+            }
         });
         
-        // Add selected class to chosen payment method
-        element.classList.add('selected');
+        // Prevent default form submission 
+        checkoutForm.addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
         
-        // Check the radio button
-        document.querySelector(`input[value="${method}"]`).checked = true;
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Tìm radio input trong payment option này và chọn nó
+                const radioInput = this.querySelector('input[type="radio"]');
+                radioInput.checked = true;
+                
+                // Kích hoạt sự kiện change để cập nhật giao diện
+                radioInput.dispatchEvent(new Event('change'));
+            });
+        });
         
-        // Add payment method to form
-        const paymentMethodInput = document.getElementById('paymentMethod');
-        if (!paymentMethodInput) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.id = 'paymentMethod';
-            input.name = 'paymentMethod';
-            input.value = method;
-            document.getElementById('checkoutForm').appendChild(input);
-        } else {
-            paymentMethodInput.value = method;
-        }
-    }
-</script>
+        // Xử lý sự kiện thay đổi cho radio inputs
+        const radioInputs = document.querySelectorAll('input[name="paymentMethod"]');
+        radioInputs.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Loại bỏ lớp active khỏi tất cả các tùy chọn
+                paymentOptions.forEach(opt => {
+                    opt.classList.remove('bg-light', 'border-primary');
+                });
+                
+                // Thêm lớp active cho tùy chọn được chọn
+                if (this.checked) {
+                    this.closest('.payment-option').classList.add('bg-light', 'border-primary');
+                    
+                    // Ẩn/hiện form thông tin thanh toán
+                    if (this.value === 'credit') {
+                        creditCardDetails.style.display = 'block';
+                        paypalDetails.style.display = 'none';
+                        // Reset card confirmation when switching to credit card
+                        if (!isCreditCardConfirmed) {
+                            cardConfirmationMessage.style.display = 'none';
+                            confirmCardBtn.disabled = false;
+                            confirmCardBtn.innerHTML = 'Confirm Card';
+                            document.querySelectorAll('#creditCardDetails input').forEach(input => {
+                                input.removeAttribute('readonly');
+                            });
+                        }
+                    } else if (this.value === 'paypal') {
+                        creditCardDetails.style.display = 'none';
+                        paypalDetails.style.display = 'block';
+                        // Reset PayPal confirmation when switching to PayPal
+                        if (!isPaypalConfirmed) {
+                            paypalConfirmationMessage.style.display = 'none';
+                            confirmPaypalBtn.disabled = false;
+                            confirmPaypalBtn.innerHTML = 'Confirm PayPal';
+                            document.querySelectorAll('#paypalDetails input').forEach(input => {
+                                input.removeAttribute('readonly');
+                            });
+                        }
+                    } else {
+                        creditCardDetails.style.display = 'none';
+                        paypalDetails.style.display = 'none';
+                    }
+                }
+            });
+        });
+        
+        // Kích hoạt sự kiện change cho radio được chọn ban đầu
+        document.querySelector('input[name="paymentMethod"]:checked').dispatchEvent(new Event('change'));
+        
+        // Validate các trường khi người dùng nhập
+        document.querySelectorAll('.form-control, .form-select').forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+            
+            field.addEventListener('input', function() {
+                if (this.classList.contains('is-invalid') && this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+        
+        // Xử lý nút confirm card
+        confirmCardBtn.addEventListener('click', function() {
+            const cardName = document.getElementById('cardName').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const cardExpiry = document.getElementById('cardExpiry').value.trim();
+            const cardCvv = document.getElementById('cardCvv').value.trim();
+            
+            // Reset trạng thái xác thực
+            document.querySelectorAll('#creditCardDetails .is-invalid').forEach(field => {
+                field.classList.remove('is-invalid');
+            });
+            
+            // Validate tất cả các trường
+            let isValid = true;
+            
+            if (!cardName) {
+                document.getElementById('cardName').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!cardNumber || !/^\d{13,19}$/.test(cardNumber.replace(/\s/g, ''))) {
+                document.getElementById('cardNumber').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!cardExpiry || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(cardExpiry)) {
+                document.getElementById('cardExpiry').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!cardCvv || !/^\d{3,4}$/.test(cardCvv)) {
+                document.getElementById('cardCvv').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Hiển thị kết quả
+            cardConfirmationMessage.style.display = 'block';
+            
+            if (isValid) {
+                isCreditCardConfirmed = true;
+                cardConfirmationMessage.className = 'alert alert-success mt-3';
+                cardConfirmationMessage.innerHTML = '<i class="fas fa-check-circle me-2"></i> Card information confirmed!';
+                confirmCardBtn.disabled = true;
+                confirmCardBtn.innerHTML = '<i class="fas fa-check me-2"></i> Confirmed';
+                
+                // Lock input fields
+                document.querySelectorAll('#creditCardDetails input').forEach(input => {
+                    input.setAttribute('readonly', true);
+                });
+            } else {
+                isCreditCardConfirmed = false;
+                cardConfirmationMessage.className = 'alert alert-danger mt-3';
+                cardConfirmationMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> Please check your card details.';
+                
+                // Scroll to first invalid field
+                const firstInvalidCard = document.querySelector('#creditCardDetails .is-invalid');
+                if (firstInvalidCard) {
+                    firstInvalidCard.focus();
+                }
+            }
+        });
 
+        // Xử lý nút confirm PayPal
+        confirmPaypalBtn.addEventListener('click', function() {
+            const paypalEmail = document.getElementById('paypalEmail').value.trim();
+            const paypalPassword = document.getElementById('paypalPassword').value.trim();
+            
+            // Reset trạng thái xác thực
+            document.querySelectorAll('#paypalDetails .is-invalid').forEach(field => {
+                field.classList.remove('is-invalid');
+            });
+            
+            // Validate tất cả các trường
+            let isValid = true;
+            
+            if (!paypalEmail || !paypalEmail.includes('@')) {
+                document.getElementById('paypalEmail').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!paypalPassword || paypalPassword.length < 6) {
+                document.getElementById('paypalPassword').classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Hiển thị kết quả
+            paypalConfirmationMessage.style.display = 'block';
+            
+            if (isValid) {
+                isPaypalConfirmed = true;
+                paypalConfirmationMessage.className = 'alert alert-success mt-3';
+                paypalConfirmationMessage.innerHTML = '<i class="fas fa-check-circle me-2"></i> PayPal account confirmed!';
+                confirmPaypalBtn.disabled = true;
+                confirmPaypalBtn.innerHTML = '<i class="fas fa-check me-2"></i> Confirmed';
+                
+                // Lock input fields
+                document.querySelectorAll('#paypalDetails input').forEach(input => {
+                    input.setAttribute('readonly', true);
+                });
+            } else {
+                isPaypalConfirmed = false;
+                paypalConfirmationMessage.className = 'alert alert-danger mt-3';
+                paypalConfirmationMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> Please check your PayPal details.';
+                
+                // Scroll to first invalid field
+                const firstInvalidPaypal = document.querySelector('#paypalDetails .is-invalid');
+                if (firstInvalidPaypal) {
+                    firstInvalidPaypal.focus();
+                }
+            }
+        });
+    });
+    
+    // Add shipping information from user profile if available
+    document.addEventListener('DOMContentLoaded', function() {
+        // You could pre-fill user information here
+        const user = {
+            // User information would be loaded from the session here
+        };
+    });
+</script>
 </body>
 </html>

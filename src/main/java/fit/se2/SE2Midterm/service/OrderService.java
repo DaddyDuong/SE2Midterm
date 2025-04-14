@@ -66,4 +66,35 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
     }
+
+    /**
+     * Lấy danh sách đơn hàng đã xác nhận của người dùng
+     * (các đơn hàng có trạng thái PAID, SHIPPED hoặc DELIVERED)
+     */
+    public List<Order> getConfirmedOrdersByUser(User user) {
+        List<Order> allOrders = orderRepository.findByUserOrderByCreatedAtDesc(user);
+        return allOrders.stream()
+                .filter(order -> order.getStatus().equals("PAID") 
+                        || order.getStatus().equals("SHIPPED") 
+                        || order.getStatus().equals("DELIVERED"))
+                .collect(java.util.stream.Collectors.toList());
+    }
+    
+    /**
+     * Xóa đơn hàng theo ID
+     * Chỉ người dùng sở hữu đơn hàng mới có thể xóa
+     */
+    @Transactional
+    public boolean deleteOrder(Long orderId, User currentUser) {
+        Order order = getOrderById(orderId);
+        
+        // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu của đơn hàng không
+        if (!order.getUser().getId().equals(currentUser.getId())) {
+            return false;
+        }
+        
+        // Xóa đơn hàng
+        orderRepository.delete(order);
+        return true;
+    }
 }

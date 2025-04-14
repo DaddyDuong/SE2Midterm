@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/products")
@@ -57,20 +60,21 @@ public class ProductController {
     
     @GetMapping("/fashion")
     public String getFashionProducts(Model model) {
-        List<String> fashionCategories = Arrays.asList("Men's Clothing", "Women's Clothing", "Accessories");
-        List<Product> allProducts = productService.getAllProducts();
+        // Tạo danh sách các sản phẩm fashion từ 3 danh mục con
+        List<Product> menClothing = productService.getProductsByType("Men's Clothing");
+        List<Product> womenClothing = productService.getProductsByType("Women's Clothing");
+        List<Product> accessories = productService.getProductsByType("Accessories");
         
-        System.out.println("Total products: " + allProducts.size());
-        System.out.println("Product types: " + allProducts.stream().map(Product::getProductType).distinct().collect(Collectors.toList()));
+        // Tổng hợp tất cả sản phẩm thời trang
+        List<Product> allFashion = new ArrayList<>();
+        allFashion.addAll(menClothing);
+        allFashion.addAll(womenClothing);
+        allFashion.addAll(accessories);
         
-        List<Product> fashionProducts = allProducts.stream()
-                .filter(product -> fashionCategories.contains(product.getProductType()))
-                .collect(Collectors.toList());
+        // Loại bỏ các sản phẩm trùng lặp
+        List<Product> uniqueFashion = removeDuplicatesByTitle(allFashion);
         
-        System.out.println("Fashion products: " + fashionProducts.size());
-        System.out.println("Fashion product names: " + fashionProducts.stream().map(Product::getTitle).collect(Collectors.toList()));
-        
-        model.addAttribute("products", fashionProducts);
+        model.addAttribute("products", uniqueFashion);
         model.addAttribute("title", "Fashion Products");
         return "product/list";
     }
@@ -82,6 +86,10 @@ public class ProductController {
             model.addAttribute("product", product);
             // Fetch related products (using products of the same type as related)
             List<Product> relatedProducts = productService.getProductsByType(product.getProductType());
+            // Loại bỏ sản phẩm hiện tại khỏi danh sách sản phẩm liên quan
+            relatedProducts = relatedProducts.stream()
+                .filter(p -> !p.getId().equals(product.getId()))
+                .collect(Collectors.toList());
             // Limit to 4 related products
             if (relatedProducts.size() > 4) {
                 relatedProducts = relatedProducts.subList(0, 4);
@@ -119,5 +127,24 @@ public class ProductController {
             ));
         
         return ResponseEntity.ok(categoryCounts);
+    }
+    
+    /**
+     * Helper method để loại bỏ sản phẩm trùng lặp dựa trên tiêu đề
+     * @param products Danh sách sản phẩm cần lọc
+     * @return Danh sách sản phẩm không trùng lặp
+     */
+    private List<Product> removeDuplicatesByTitle(List<Product> products) {
+        Set<String> seenTitles = new HashSet<>();
+        List<Product> uniqueProducts = new ArrayList<>();
+        
+        for (Product product : products) {
+            if (!seenTitles.contains(product.getTitle())) {
+                uniqueProducts.add(product);
+                seenTitles.add(product.getTitle());
+            }
+        }
+        
+        return uniqueProducts;
     }
 }

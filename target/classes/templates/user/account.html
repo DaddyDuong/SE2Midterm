@@ -131,22 +131,16 @@
                                             Shopping Dashboard
                                         </h5>
                                         <div class="row text-center">
-                                            <div class="col-md-4 mb-3 mb-md-0">
+                                            <div class="col-md-6 mb-3 mb-md-0">
                                                 <div class="p-3 bg-light rounded">
-                                                    <div class="display-4 fw-bold text-primary">0</div>
+                                                    <div class="display-4 fw-bold text-primary" th:text="${cartItemCount}">0</div>
                                                     <div class="text-muted">Items in Cart</div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-3 mb-md-0">
+                                            <div class="col-md-6">
                                                 <div class="p-3 bg-light rounded">
-                                                    <div class="display-4 fw-bold text-primary">0</div>
-                                                    <div class="text-muted">Completed Orders</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="p-3 bg-light rounded">
-                                                    <div class="display-4 fw-bold text-primary">0</div>
-                                                    <div class="text-muted">Items Saved</div>
+                                                    <div class="display-4 fw-bold text-primary" th:text="${orderHistoryCount}">0</div>
+                                                    <div class="text-muted">Order History</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -170,6 +164,7 @@
 
     <!-- Scripts -->
     <div th:replace="fragments/header :: scripts"></div>
+    <div th:replace="fragments/header :: search-script"></div>
     
     <!-- Password Management JavaScript -->
     <script>
@@ -180,6 +175,10 @@
             const confirmPasswordInput = document.getElementById('confirmPassword');
             const passwordMismatch = document.getElementById('passwordMismatch');
             const savePasswordBtn = document.getElementById('savePasswordBtn');
+            const passwordVerifyForm = document.getElementById('passwordVerifyForm');
+            const currentPasswordInput = document.getElementById('currentPassword');
+            const passwordVerifyBtn = document.getElementById('passwordVerifyBtn');
+            const passwordError = document.getElementById('passwordError');
             
             // Check if passwords match when typing
             function checkPasswordMatch() {
@@ -217,16 +216,108 @@
                 });
             }
             
+            // Handle password verification form
+            if (passwordVerifyForm) {
+                passwordVerifyForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    
+                    // Reset error message
+                    passwordError.classList.add('d-none');
+                    
+                    // Check if password is empty
+                    if (!currentPasswordInput.value) {
+                        passwordError.textContent = "Please enter your current password";
+                        passwordError.classList.remove('d-none');
+                        return;
+                    }
+                    
+                    // Verify password via AJAX
+                    fetch('/user/verify-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'password=' + encodeURIComponent(currentPasswordInput.value),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // If password is correct, open the change password modal
+                            const passwordConfirmModal = bootstrap.Modal.getInstance(document.getElementById('passwordConfirmModal'));
+                            passwordConfirmModal.hide();
+                            
+                            // Clear the password field
+                            currentPasswordInput.value = '';
+                            
+                            // Show change password modal
+                            const changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+                            changePasswordModal.show();
+                        } else {
+                            // Show error message
+                            passwordError.textContent = "Incorrect password. Please try again.";
+                            passwordError.classList.remove('d-none');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        passwordError.textContent = "An error occurred. Please try again.";
+                        passwordError.classList.remove('d-none');
+                    });
+                });
+            }
+            
             // Handle modal chaining
             const passwordConfirmModal = document.getElementById('passwordConfirmModal');
             if (passwordConfirmModal) {
                 passwordConfirmModal.addEventListener('hidden.bs.modal', function() {
+                    // Reset form when modal is closed
+                    if (passwordVerifyForm) {
+                        passwordVerifyForm.reset();
+                        passwordError.classList.add('d-none');
+                    }
+                    
+                    // Force remove backdrop and reset body styling
+                    document.body.classList.remove('modal-open');
+                    const backdrops = document.getElementsByClassName('modal-backdrop');
+                    while(backdrops.length > 0) {
+                        backdrops[0].parentNode.removeChild(backdrops[0]);
+                    }
+                });
+            }
+            
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            if (changePasswordModal) {
+                changePasswordModal.addEventListener('hidden.bs.modal', function() {
                     // Reset form when modal is closed
                     if (changePasswordForm) {
                         changePasswordForm.reset();
                         passwordMismatch.classList.add('d-none');
                         savePasswordBtn.disabled = false;
                     }
+                    
+                    // Force remove backdrop and reset body styling
+                    document.body.classList.remove('modal-open');
+                    const backdrops = document.getElementsByClassName('modal-backdrop');
+                    while(backdrops.length > 0) {
+                        backdrops[0].parentNode.removeChild(backdrops[0]);
+                    }
+                });
+            }
+            
+            // Handle cancel buttons
+            const cancelButtons = document.querySelectorAll('.btn-cancel-modal');
+            if (cancelButtons) {
+                cancelButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Completely close modal and remove backdrop
+                        const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
+                        modal.hide();
+                        
+                        // Force navigate back to account page after a short delay
+                        setTimeout(function() {
+                            window.location.href = '/user/account';
+                        }, 100);
+                    });
                 });
             }
         });
@@ -241,21 +332,25 @@
                         <i class="fas fa-shield-alt text-primary me-2"></i>
                         Account Security
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Current Password:</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" id="currentPassword" value="********" readonly>
+                <form id="passwordVerifyForm">
+                    <div class="modal-body">
+                        <p class="mb-3">Please enter your current password to continue.</p>
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password:</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                            </div>
+                            <div id="passwordError" class="text-danger mt-1 d-none">
+                                Incorrect password
+                            </div>
                         </div>
                     </div>
-                    <p>Would you like to change your password?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button type="button" class="btn btn-primary" id="changePasswordBtn" data-bs-toggle="modal" data-bs-target="#changePasswordModal" data-bs-dismiss="modal">Yes</button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-cancel-modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="passwordVerifyBtn">Confirm</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -269,7 +364,6 @@
                         <i class="fas fa-key text-primary me-2"></i>
                         Change Password
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="changePasswordForm" th:action="@{/user/change-password}" method="post">
                     <div class="modal-body">
@@ -286,7 +380,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary btn-cancel-modal">Cancel</button>
                         <button type="submit" class="btn btn-primary" id="savePasswordBtn">Save Changes</button>
                     </div>
                 </form>
@@ -303,7 +397,7 @@
                         <i class="fas fa-venus-mars text-primary me-2"></i>
                         Update Gender Preference
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-cancel-modal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{/user/update-gender}" method="post">
                     <div class="modal-body">
@@ -319,12 +413,53 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary btn-cancel-modal" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Script to ensure user-specific data -->
+    <script>
+        // Verify that the logged-in user matches the data being displayed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get logged in user - check for username element
+            const usernameElement = document.querySelector('.text-primary');
+            const sessionUsername = usernameElement ? usernameElement.textContent.trim() : null;
+            
+            // Log information but don't redirect - the server controller already handles redirection
+            if (!usernameElement || !sessionUsername) {
+                console.log('No username found in the UI, but session should already be validated by controller');
+            } else {
+                console.log('User profile loaded for: ' + sessionUsername);
+            }
+            
+            // Initialize form fields with user data when modals open
+            const genderModal = document.getElementById('genderModal');
+            if (genderModal) {
+                genderModal.addEventListener('show.bs.modal', function() {
+                    // Current gender is already selected through th:selected in the form
+                    console.log('Gender modal opened with pre-selected value');
+                });
+            }
+            
+            // Attempt to restore user data from localStorage if needed - don't redirect
+            try {
+                // Check if email field is empty but we have data in localStorage
+                const emailElement = document.querySelector('span.fw-bold:not(:empty)');
+                if (sessionUsername && emailElement && emailElement.textContent === 'Not set') {
+                    const userData = localStorage.getItem('userProfileData_' + sessionUsername);
+                    if (userData) {
+                        console.log('Data found in localStorage, could be used to enhance display');
+                        // Don't redirect, just log information
+                    }
+                }
+            } catch (e) {
+                console.error('Error checking user data:', e);
+            }
+        });
+    </script>
 </body>
 </html> 

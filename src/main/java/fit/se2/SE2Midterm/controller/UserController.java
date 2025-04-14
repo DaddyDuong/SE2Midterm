@@ -1,6 +1,7 @@
 package fit.se2.SE2Midterm.controller;
 
 import fit.se2.SE2Midterm.model.User;
+import fit.se2.SE2Midterm.model.Cart;
 import fit.se2.SE2Midterm.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -71,7 +75,30 @@ public class UserController {
             return "redirect:/user/login";
         }
         
+        // Add user to model
         model.addAttribute("user", loggedInUser);
+        
+        // Get cart item count
+        Cart cart = (Cart) session.getAttribute("cart");
+        int cartItemCount = 0;
+        if (cart != null) {
+            cartItemCount = cart.getTotalItems();
+        }
+        model.addAttribute("cartItemCount", cartItemCount);
+        
+        // Get order history count - this would typically come from an OrderService
+        // For now, we'll use a placeholder or get it from the database if available
+        int orderHistoryCount = 0; 
+        // Todo: Replace with actual call to order service when implemented
+        // orderHistoryCount = orderService.getOrderCountByUser(loggedInUser.getId());
+        model.addAttribute("orderHistoryCount", orderHistoryCount);
+        
+        // Get completed order count (could be a subset of order history)
+        int completedOrderCount = 0;
+        // Todo: Replace with actual call when implemented
+        // completedOrderCount = orderService.getCompletedOrderCountByUser(loggedInUser.getId());
+        model.addAttribute("completedOrderCount", completedOrderCount);
+        
         return "user/account";
     }
     
@@ -207,5 +234,53 @@ public class UserController {
         }
         
         return "redirect:/user/account";
+    }
+
+    // API endpoint to verify current password
+    @PostMapping("/user/verify-password")
+    @ResponseBody
+    public Map<String, Object> verifyPassword(@RequestParam("password") String password,
+                                           HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        
+        // Get logged in user
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        
+        if (loggedInUser == null) {
+            response.put("success", false);
+            return response;
+        }
+        
+        // Verify password
+        User authenticatedUser = userService.authenticateUser(loggedInUser.getUsername(), password);
+        
+        if (authenticatedUser != null) {
+            response.put("success", true);
+        } else {
+            response.put("success", false);
+        }
+        
+        return response;
+    }
+    
+    // Session status check endpoint
+    @GetMapping("/user/session-status")
+    @ResponseBody
+    public Map<String, Object> checkSessionStatus(HttpSession session) {
+        Map<String, Object> status = new HashMap<>();
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        
+        if (loggedInUser != null) {
+            status.put("loggedIn", true);
+            status.put("username", loggedInUser.getUsername());
+            status.put("sessionId", session.getId());
+            status.put("sessionCreationTime", new java.util.Date(session.getCreationTime()));
+            status.put("sessionLastAccessedTime", new java.util.Date(session.getLastAccessedTime()));
+        } else {
+            status.put("loggedIn", false);
+            status.put("sessionId", session.getId());
+        }
+        
+        return status;
     }
 }

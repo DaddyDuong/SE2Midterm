@@ -8,6 +8,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class ProductService {
@@ -42,7 +49,8 @@ public class ProductService {
      * @return List of all products
      */
     public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        return removeDuplicates(products);
     }
 
     /**
@@ -60,7 +68,8 @@ public class ProductService {
      * @return List of products with discount
      */
     public List<Product> getDeals() {
-        return productRepository.findByDiscountPercentageIsNotNull();
+        List<Product> deals = productRepository.findByDiscountPercentageIsNotNull();
+        return removeDuplicates(deals);
     }
 
     /**
@@ -68,7 +77,8 @@ public class ProductService {
      * @return List of products with no discount
      */
     public List<Product> getRegularProducts() {
-        return productRepository.findByDiscountPercentageIsNull();
+        List<Product> products = productRepository.findByDiscountPercentageIsNull();
+        return removeDuplicates(products);
     }
 
     /**
@@ -77,6 +87,37 @@ public class ProductService {
      * @return List of products of the specified type
      */
     public List<Product> getProductsByType(String productType) {
-        return productRepository.findByProductType(productType);
+        List<Product> products = productRepository.findByProductType(productType);
+        return removeDuplicates(products);
+    }
+    
+    /**
+     * Search products by title
+     * @param query Search query
+     * @return List of products matching the search query
+     */
+    public List<Product> searchProductsByTitle(String query) {
+        List<Product> products = productRepository.findByTitleContainingIgnoreCase(query);
+        return removeDuplicates(products);
+    }
+    
+    /**
+     * Helper method to remove duplicate products
+     * @param products List of products to deduplicate
+     * @return List of unique products
+     */
+    private List<Product> removeDuplicates(List<Product> products) {
+        // Sử dụng LinkedHashMap để duy trì thứ tự và loại bỏ các phần tử trùng lặp dựa trên title
+        // Giữ lại phần tử đầu tiên gặp phải với mỗi title
+        Map<String, Product> uniqueProducts = new LinkedHashMap<>();
+        
+        for (Product product : products) {
+            String key = product.getTitle();
+            if (!uniqueProducts.containsKey(key)) {
+                uniqueProducts.put(key, product);
+            }
+        }
+        
+        return new ArrayList<>(uniqueProducts.values());
     }
 }

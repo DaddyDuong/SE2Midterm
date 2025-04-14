@@ -6,7 +6,16 @@
             <div class="col-md-3 col-sm-6 footer-widget mb-4">
                 <h3>ABOUT US</h3>
                 <p>We are an ecommerce platform dedicated to provide high quality products with exceptional customer service.</p>
-                <div class="social-icons">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="/" class="text-decoration-none text-white">Home</a></li>
+                    <li class="mb-2"><a href="/contact" class="text-decoration-none text-white">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <!-- Quick Links Section -->
+            <div class="col-md-3 col-sm-6 footer-widget mb-4">
+                <h3>QUICK LINKS</h3>
+                <div class="social-icons mb-3">
                     <a href="https://facebook.com" target="_blank" class="social-icon me-3">
                         <i class="fab fa-facebook-f fa-lg"></i>
                     </a>
@@ -28,21 +37,16 @@
                 </div>
             </div>
             
-            <!-- Quick Links Section -->
-            <div class="col-md-3 col-sm-6 footer-widget mb-4">
-                <h3>QUICK LINKS</h3>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="/" class="text-decoration-none text-white">Home</a></li>
-                    <li class="mb-2"><a href="/contact" class="text-decoration-none text-white">Contact Us</a></li>
-                </ul>
-            </div>
-            
-            <!-- Account Section -->
+            <!-- Account Section - Modified to redirect to login when not authenticated -->
             <div class="col-md-3 col-sm-6 footer-widget mb-4">
                 <h3>MY ACCOUNT</h3>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="/account/profile" class="text-decoration-none text-white">My Profile</a></li>
-                    <li class="mb-2"><a href="/cart/view" class="text-decoration-none text-white">My Cart</a></li>
+                    <li class="mb-2">
+                        <a th:href="${session.loggedInUser != null} ? '/user/profile' : '/login'" class="text-decoration-none text-white">My Profile</a>
+                    </li>
+                    <li class="mb-2">
+                        <a th:href="${session.loggedInUser != null} ? '/cart/view' : '/login'" class="text-decoration-none text-white">My Cart</a>
+                    </li>
                 </ul>
             </div>
             

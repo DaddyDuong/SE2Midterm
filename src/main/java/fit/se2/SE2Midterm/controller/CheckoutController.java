@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
 @Controller
 @RequestMapping("/checkout")
 public class CheckoutController {
@@ -93,7 +97,7 @@ public class CheckoutController {
     }
 
     @GetMapping("/confirmation")
-    public String showConfirmationPage(HttpSession session, Model model) {
+    public String showConfirmationPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         // Check if user is logged in
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null) {
@@ -103,6 +107,36 @@ public class CheckoutController {
         // Check if order success message exists
         if (!model.containsAttribute("orderSuccess")) {
             return "redirect:/";
+        }
+
+        // Get the actual order ID from flash attributes
+        Long orderId = (Long) model.asMap().get("orderId");
+        
+        try {
+            // Lấy đơn hàng hiện tại
+            Order currentOrder = orderService.getOrderById(orderId);
+            
+            if (currentOrder != null) {
+                // Lấy danh sách tất cả đơn hàng đã xác nhận của người dùng
+                List<Order> userOrders = orderService.getConfirmedOrdersByUser(user);
+                
+                // Đếm số đơn hàng có thời gian tạo trước hoặc bằng đơn hàng hiện tại
+                int orderIndex = 0;
+                for (Order order : userOrders) {
+                    if (order.getCreatedAt().compareTo(currentOrder.getCreatedAt()) <= 0) {
+                        orderIndex++;
+                    }
+                }
+                
+                // Thêm số thứ tự vào model
+                model.addAttribute("orderIndex", orderIndex);
+            } else {
+                // Nếu không tìm thấy đơn hàng, sử dụng số thứ tự mặc định
+                model.addAttribute("orderIndex", 1);
+            }
+        } catch (Exception e) {
+            // Nếu có lỗi, sử dụng 1 làm số thứ tự mặc định
+            model.addAttribute("orderIndex", 1);
         }
 
         return "checkout/confirmation";

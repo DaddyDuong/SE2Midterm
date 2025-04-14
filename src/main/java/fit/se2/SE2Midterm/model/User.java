@@ -19,26 +19,26 @@ public class User {
     @Column(name = "email")
     private String email;
     
-    // Additional profile information - these are not in the database schema yet
-    @Transient
+    // Additional profile information
+    @Column(name = "full_name")
     private String fullName;
     
     @Column(name = "phone_number")
     private String phoneNumber;
     
-    @Transient
+    @Column(name = "address")
     private String address;
     
-    @Transient
+    @Column(name = "age")
     private Integer age;
     
-    @Transient
+    @Column(name = "gender")
     private String gender;
     
-    @Transient
+    @Column(name = "avatar_url")
     private String avatarUrl;
     
-    @Transient
+    @Column(name = "preferred_payment_method")
     private String preferredPaymentMethod;
 
     public User() {

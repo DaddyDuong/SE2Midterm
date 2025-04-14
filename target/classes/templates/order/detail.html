@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
+
+    <!-- Toast Messages -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" id="errorToast" th:if="${error}">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${error}">
+                    Error message here
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        
+        <!-- Success Toast -->
+        <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="successToast" th:if="${success}">
+            <div class="d-flex">
+                <div class="toast-body" th:text="${success}">
+                    Success message here
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="fw-bold mb-0">Order Details</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/user/account}" class="text-decoration-none">My Account</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/orders/history}" class="text-decoration-none">Order History</a></li>
+                            <li class="breadcrumb-item active" aria-current="page" th:text="${'Order #' + orderIndex}">Order #1</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Content -->
+    <div class="container py-5">
+        <div class="row">
+            <!-- Order Summary -->
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>
+                            Order Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="mb-2 d-flex justify-content-between">
+                                <span class="text-muted">Order Number:</span>
+                                <span class="fw-bold" th:text="${'#' + orderIndex}">1</span>
+                            </div>
+                            <div class="mb-2 d-flex justify-content-between">
+                                <span class="text-muted">Date:</span>
+                                <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy HH:mm')}">01 Jan 2023</span>
+                            </div>
+                            <div class="mb-2 d-flex justify-content-between">
+                                <span class="text-muted">Status:</span>
+                                <span class="badge rounded-pill" 
+                                      th:classappend="${order.status == 'PENDING' ? 'bg-warning' : 
+                                                     (order.status == 'PAID' ? 'bg-success' : 
+                                                     (order.status == 'SHIPPED' ? 'bg-info' : 
+                                                     (order.status == 'DELIVERED' ? 'bg-primary' : 
+                                                     (order.status == 'CANCELED' ? 'bg-danger' : 'bg-secondary'))))}">
+                                    <span th:text="${order.status}">PAID</span>
+                                </span>
+                            </div>
+                            <div class="mb-2 d-flex justify-content-between">
+                                <span class="text-muted">Total Items:</span>
+                                <span th:text="${order.orderItems.size()}">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 pb-3 border-bottom">
+                            <h6 class="mb-3">Payment Information</h6>
+                            <div class="mb-2 d-flex justify-content-between">
+                                <span class="text-muted">Payment Method:</span>
+                                <span th:text="${order.paymentMethod}">Credit Card</span>
+                            </div>
+                            <div class="mb-0 d-flex justify-content-between">
+                                <span class="text-muted">Total Amount:</span>
+                                <span class="fw-bold fs-5 text-primary" 
+                                      th:text="${'$' + #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')}">
+                                    $99.99
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h6 class="mb-3">Shipping Information</h6>
+                            <div class="mb-2">
+                                <span class="text-muted">Recipient:</span>
+                                <div class="fw-bold" th:text="${order.shippingName}">John Doe</div>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-muted">Address:</span>
+                                <div class="fw-bold" th:text="${order.shippingAddress}">123 Main St</div>
+                            </div>
+                            <div class="mb-0">
+                                <span class="text-muted">Location:</span>
+                                <div class="fw-bold" 
+                                     th:text="${order.shippingCity + ', ' + order.shippingPostalCode + ', ' + order.shippingCountry}">
+                                    New York, 10001, United States
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Return to Order History Button -->
+                <a th:href="@{/orders/history}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Order History
+                </a>
+                
+                <!-- Delete Order Button -->
+                <a th:href="@{'/orders/delete/' + ${order.id}}" 
+                   class="btn btn-outline-danger w-100" 
+                   onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.')">
+                    <i class="fas fa-trash me-2"></i> Delete Order
+                </a>
+            </div>
+            
+            <!-- Order Items -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shopping-basket me-2"></i>
+                            Order Items
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 80px">Image</th>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${order.orderItems}">
+                                        <td>
+                                            <img th:src="@{'/images/products/' + ${item.product.title} + '.jpg'}" 
+                                                 class="img-fluid rounded"
+                                                 style="width: 60px; height: 60px; object-fit: cover;"
+                                                 alt="Product Image"
+                                                 onerror="this.onerror=null; this.src='/images/products/default-product.jpg';">
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold" th:text="${item.product.title}">Product Name</div>
+                                            <small class="text-muted" th:text="${'SKU: ' + item.product.id}">SKU: 12345</small>
+                                        </td>
+                                        <td th:text="${'$' + #numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT')}">$29.99</td>
+                                        <td th:text="${item.quantity}">1</td>
+                                        <td class="text-end fw-bold" th:text="${'$' + #numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')}">$29.99</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">Total:</td>
+                                        <td class="text-end fw-bold text-primary" 
+                                            th:text="${'$' + #numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 2, 'POINT')}">
+                                            $99.99
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="fragments/footer :: footer"></div>
+
+    <!-- Bootstrap JS and other scripts -->
+    <div th:replace="fragments/header :: scripts"></div>
+    
+    <script>
+        // Initialize toasts
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorToast = document.getElementById('errorToast');
+            if (errorToast) {
+                var toast = new bootstrap.Toast(errorToast);
+                toast.show();
+            }
+            
+            var successToast = document.getElementById('successToast');
+            if (successToast) {
+                var toast = new bootstrap.Toast(successToast);
+                toast.show();
+            }
+        });
+    </script>
+</body>
+</html> 
