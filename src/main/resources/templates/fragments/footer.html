@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer th:fragment="footer" class="bg-dark text-white pt-5 pb-4">
+<footer th:fragment="footer" class="bg-dark text-white pt-5 pb-4 mt-auto">
     <div class="container">
         <div class="row">
             <!-- About Us Section -->
@@ -85,12 +85,33 @@
 <style>
     html, body {
         height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
     }
     
     body {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        position: relative;
+    }
+    
+    .main-content, main, .flex-grow-1 {
+        flex: 1 0 auto;
+    }
+    
+    footer {
+        flex-shrink: 0;
+        width: 100%;
+        position: relative;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
     }
     
     .footer h3:after {
@@ -102,5 +123,176 @@
         height: 2px;
         background-color: #4CAF50;
     }
+    
+    /* iPad Air specific adjustments */
+    @media (min-width: 768px) and (max-width: 834px) {
+        /* General font size increase */
+        body {
+            font-size: 16px;
+        }
+        
+        /* Headings larger on iPad */
+        h1 {
+            font-size: 2.5rem !important;
+        }
+        
+        h2 {
+            font-size: 2.2rem !important;
+        }
+        
+        h3 {
+            font-size: 1.8rem !important;
+        }
+        
+        /* Larger buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Larger form elements */
+        input, select, textarea {
+            font-size: 1.1rem !important;
+            padding: 0.7rem !important;
+        }
+        
+        .form-control-lg {
+            font-size: 1.2rem !important;
+        }
+        
+        /* Larger table text */
+        table {
+            font-size: 1.1rem;
+        }
+        
+        /* Larger footer text */
+        footer {
+            font-size: 1.1rem;
+        }
+        
+        footer h3 {
+            font-size: 1.5rem !important;
+        }
+        
+        /* Larger card elements */
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        /* Fix footer display */
+        html {
+            height: -webkit-fill-available;
+        }
+        
+        body {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+        
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* Larger navbar elements */
+        .navbar-brand {
+            font-size: 1.8rem !important;
+        }
+        
+        .nav-link {
+            font-size: 1.1rem !important;
+            padding: 0.5rem 0.8rem !important;
+        }
+        
+        /* Larger icons */
+        .fa, .fas, .far, .fab {
+            font-size: 1.3em;
+        }
+        
+        /* Larger breadcrumb */
+        .breadcrumb {
+            font-size: 1.1rem;
+        }
+        
+        /* Fix common layout issues */
+        .container {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+    
+    /* Fix for Safari */
+    @supports (-webkit-touch-callout: none) {
+        body, html {
+            height: -webkit-fill-available;
+        }
+    }
 </style>
+
+<script>
+    // Global footer positioning script
+    document.addEventListener('DOMContentLoaded', function() {
+        function fixFooter() {
+            // Force page to be at least as tall as viewport
+            document.body.style.minHeight = window.innerHeight + 'px';
+            
+            // Get elements
+            const footer = document.querySelector('footer');
+            const html = document.documentElement;
+            
+            // Calculate the document height and viewport height
+            const windowHeight = window.innerHeight;
+            const bodyHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                html.clientHeight,
+                html.scrollHeight,
+                html.offsetHeight
+            );
+            
+            // Ensure no space below footer
+            if (footer) {
+                if (bodyHeight <= windowHeight) {
+                    // If content is shorter than viewport, push footer to bottom
+                    footer.style.position = 'absolute';
+                    footer.style.bottom = '0';
+                    footer.style.width = '100%';
+                    document.body.style.paddingBottom = footer.offsetHeight + 'px';
+                } else {
+                    // If content exceeds viewport, use normal flow
+                    footer.style.position = 'relative';
+                    document.body.style.paddingBottom = '0';
+                }
+            }
+        }
+        
+        // Run on page load and resize
+        fixFooter();
+        window.addEventListener('resize', fixFooter);
+        window.addEventListener('load', fixFooter);
+        window.addEventListener('orientationchange', fixFooter);
+        
+        // Check content changes
+        const observer = new MutationObserver(fixFooter);
+        observer.observe(document.body, { childList: true, subtree: true });
+        
+        // Extra check for iPad
+        if (window.innerWidth >= 768 && window.innerWidth <= 834) {
+            setInterval(fixFooter, 500);
+        }
+        
+        // After images load, check again
+        window.addEventListener('load', function() {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (img.complete) {
+                    fixFooter();
+                } else {
+                    img.addEventListener('load', fixFooter);
+                }
+            });
+        });
+    });
+</script>
 

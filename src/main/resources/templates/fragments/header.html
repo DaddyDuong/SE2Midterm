@@ -14,6 +14,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom styles -->
     <style>
+        /* Root Variables */
         :root {
             --primary-color: #4CAF50;
             --secondary-color: #333;
@@ -41,9 +42,9 @@
         }
         
         .navbar-brand {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
-            padding-right: 15px;
+            padding-right: 10px;
         }
         
         .search-container {
@@ -52,7 +53,7 @@
             position: relative;
         }
         
-        #suggestions {
+        #suggestions, #popupSuggestions {
             position: absolute;
             top: 100%;
             left: 0;
@@ -79,8 +80,8 @@
         
         .welcome-text {
             color: white;
-            margin-right: 15px;
-            font-size: 18px;
+            margin-right: 10px;
+            font-size: 14px;
             white-space: nowrap;
         }
         
@@ -89,31 +90,153 @@
         }
         
         .nav-link {
-            padding: 0.5rem 0.85rem;
-            font-size: 18px;
+            padding: 0.5rem 0.7rem;
+            font-size: 14px;
         }
         
         .navbar-nav .nav-link {
-            padding-left: 12px;
-            padding-right: 12px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
         
-        /* Tăng kích thước cho icon */
+        /* Icon styling */
         .navbar .fas, 
         .navbar .far {
-            font-size: 20px;
-            margin-right: 6px;
+            font-size: 16px;
+            margin-right: 4px;
         }
         
         .compact-navbar {
-            padding-top: 0.6rem;
-            padding-bottom: 0.6rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
         
+        /* CSS cho popup tìm kiếm */
+        .search-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            padding: 10px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .search-icon-container {
+            cursor: pointer;
+        }
+        
+        #popupSuggestions {
+            position: relative;
+            top: 0;
+        }
+        
+        /* Media queries */
         @media (max-width: 992px) {
+            .search-container {
+                max-width: 50px;
+                min-width: 50px;
+                margin: 0;
+            }
+            
+            .welcome-text {
+                font-size: 13px;
+                margin-right: 5px;
+            }
+            
+            .navbar-brand {
+                font-size: 24px;
+                padding-right: 5px;
+            }
+            
+            .nav-link {
+                padding: 0.4rem 0.5rem;
+                font-size: 13px;
+            }
+            
+            .navbar .fas, 
+            .navbar .far {
+                font-size: 14px;
+                margin-right: 3px;
+            }
+        }
+        
+        /* iPad Air Specific (768px - 834px) */
+        @media (min-width: 768px) and (max-width: 834px) {
+            .navbar-brand {
+                font-size: 22px;
+                margin-right: 0 !important;
+            }
+            
+            .nav-link {
+                padding: 0.3rem 0.4rem;
+                font-size: 12px;
+            }
+            
+            .navbar .fas,
+            .navbar .far {
+                font-size: 14px;
+                margin-right: 2px;
+            }
+            
+            .welcome-text {
+                font-size: 12px; /* Show welcome text but with smaller size */
+                margin-right: 5px;
+                white-space: nowrap;
+            }
+            
+            .navbar-nav .nav-link {
+                padding-left: 6px;
+                padding-right: 6px;
+            }
+            
+            .search-container {
+                max-width: 40px;
+                min-width: 40px;
+                margin-right: 15px; /* Add spacing between search and welcome */
+            }
+
+            /* Add margin to search form */
+            .search-container.d-flex {
+                margin-right: 20px;
+            }
+            
+            /* Add margin to the search icon container */
+            .search-icon-container {
+                margin-right: 15px;
+            }
+            
+            /* Increase spacing in the navbar content */
+            #navbarContent {
+                justify-content: space-between;
+            }
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 767px) {
             .search-container {
                 max-width: 100%;
                 margin: 10px 0;
+            }
+            
+            .navbar-toggler {
+                padding: 0.25rem 0.5rem;
+                font-size: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 24px;
+            }
+            
+            .welcome-text {
+                display: none;
             }
         }
     </style>
@@ -136,65 +259,95 @@
                     <ul class="navbar-nav me-2 mb-0">
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="@{/products/fashion}">
-                                <i class="fas fa-tshirt me-1"></i> Fashion
+                                <i class="fas fa-tshirt me-1"></i><span>Fashion</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="@{/products}">
-                                <i class="fas fa-list me-1"></i> Categories
+                                <i class="fas fa-list me-1"></i><span>Categories</span>
                             </a>
                         </li>
                     </ul>
                     
                     <!-- Search Bar -->
                     <form class="search-container d-flex me-auto" th:action="@{/product/search}" method="get">
-                        <div class="input-group position-relative">
+                        <!-- Thanh tìm kiếm thông thường (hiển thị trên desktop) -->
+                        <div class="input-group position-relative d-none d-lg-flex">
                             <input type="text" class="form-control" placeholder="Search products..." name="query" id="searchInput" autocomplete="off">
                             <button class="btn btn-light" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
                             <div id="suggestions" class="position-absolute bg-white border shadow-sm rounded w-100" style="display: none;"></div>
                         </div>
+                        
+                        <!-- Biểu tượng tìm kiếm cho tablet và mobile -->
+                        <div class="search-icon-container d-flex d-lg-none">
+                            <button type="button" class="btn btn-light search-toggle" aria-label="Search">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </form>
+                    
+                    <!-- Popup tìm kiếm cho tablet và mobile -->
+                    <div class="search-popup">
+                        <div class="container py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="input-group w-100">
+                                    <input type="text" class="form-control" placeholder="Search products..." id="popupSearchInput" autocomplete="off">
+                                    <button class="btn btn-primary search-submit" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                    <button class="btn btn-light search-close" type="button">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="popupSuggestions" class="bg-white border shadow-sm rounded w-100 mt-2" style="display: none;"></div>
+                        </div>
+                    </div>
                     
                     <!-- Right Navigation -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- Show welcome message when logged in -->
-                        <li class="nav-item d-flex align-items-center" th:if="${session.loggedInUser != null}">
-                            <span class="welcome-text"><i class="fas fa-user me-1"></i> Welcome, <span th:text="${session.loggedInUser.username}">User</span></span>
+                        <!-- Show welcome message with username on desktop and mobile -->
+                        <li class="nav-item d-flex align-items-center d-md-none d-lg-flex" th:if="${session.loggedInUser != null}">
+                            <span class="welcome-text"><i class="fas fa-user me-1"></i> <span th:text="'Welcome, ' + ${session.loggedInUser.username}">User</span></span>
+                        </li>
+                        <!-- Only show "Welcome" without username on iPad -->
+                        <li class="nav-item d-none d-md-flex d-lg-none" th:if="${session.loggedInUser != null}">
+                            <span class="welcome-text"><i class="fas fa-user me-1"></i> Welcome</span>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="${session.loggedInUser != null} ? @{/user/profile} : @{/user/login}">
-                                <i class="fas fa-user-circle me-1"></i> My Profile
+                                <i class="fas fa-user-circle me-1"></i><span class="nav-text">Profile</span>
                             </a>
                         </li>
                         <!-- Order History button - Only show when logged in -->
                         <li class="nav-item" th:if="${session.loggedInUser != null}">
                             <a class="nav-link px-2" th:href="@{/orders/history}">
-                                <i class="fas fa-history me-1"></i> History
+                                <i class="fas fa-history me-1"></i><span class="nav-text">History</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="@{/cart}">
-                                <i class="fas fa-shopping-cart me-1"></i>
+                                <i class="fas fa-shopping-cart me-1"></i> <span class="d-none d-lg-inline nav-text">Cart</span>
                             </a>
                         </li>
                         <!-- Help & Contact -->
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="${session.loggedInUser != null} ? @{/contact} : @{/user/login}">
-                                <i class="fas fa-question-circle me-1"></i> Help
+                                <i class="fas fa-question-circle me-1"></i><span class="nav-text">Help</span>
                             </a>
                         </li>
                         <!-- Log Out - Only show when logged in -->
                         <li class="nav-item" th:if="${session.loggedInUser != null}">
                             <a class="nav-link px-2" th:href="@{/user/logout}">
-                                <i class="fas fa-sign-out-alt me-1"></i> Log Out
+                                <i class="fas fa-sign-out-alt me-1"></i><span class="nav-text">Logout</span>
                             </a>
                         </li>
                         <!-- Login/Register - Only show when NOT logged in -->
                         <li class="nav-item" th:if="${session.loggedInUser == null}">
                             <a class="nav-link px-2" th:href="@{/user/login}">
-                                <i class="fas fa-sign-in-alt me-1"></i> Log In
+                                <i class="fas fa-sign-in-alt me-1"></i><span class="nav-text">Login</span>
                             </a>
                         </li>
                     </ul>
@@ -212,71 +365,145 @@
     <script th:fragment="search-script">
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
+            const popupSearchInput = document.getElementById('popupSearchInput');
             const suggestionsDiv = document.getElementById('suggestions');
+            const popupSuggestionsDiv = document.getElementById('popupSuggestions');
+            const searchToggle = document.querySelector('.search-toggle');
+            const searchPopup = document.querySelector('.search-popup');
+            const searchClose = document.querySelector('.search-close');
+            const searchSubmit = document.querySelector('.search-submit');
             
-            if (!searchInput || !suggestionsDiv) return;
+            if (searchToggle) {
+                // Mở popup tìm kiếm khi nhấn vào biểu tượng
+                searchToggle.addEventListener('click', function() {
+                    searchPopup.style.display = 'block';
+                    popupSearchInput.focus();
+                });
+                
+                // Đóng popup khi nhấn nút đóng
+                searchClose.addEventListener('click', function() {
+                    searchPopup.style.display = 'none';
+                    popupSearchInput.value = '';
+                    popupSuggestionsDiv.style.display = 'none';
+                });
+                
+                // Xử lý khi nhấn nút tìm kiếm trong popup
+                searchSubmit.addEventListener('click', function() {
+                    if (popupSearchInput.value.trim()) {
+                        window.location.href = '/product/search?query=' + encodeURIComponent(popupSearchInput.value.trim());
+                    }
+                });
+                
+                // Xử lý khi nhấn Enter trong ô tìm kiếm popup
+                popupSearchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && this.value.trim()) {
+                        window.location.href = '/product/search?query=' + encodeURIComponent(this.value.trim());
+                    }
+                });
+            }
             
-            let debounceTimer;
+            // Xử lý gợi ý tìm kiếm cho cả hai ô input
+            function setupSearchSuggestions(input, suggestionsContainer) {
+                if (!input || !suggestionsContainer) return;
+                
+                let debounceTimer;
+                
+                // Xử lý khi gõ vào ô tìm kiếm
+                input.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimer);
+                    
+                    if (query.length === 0) {
+                        suggestionsContainer.style.display = 'none';
+                        return;
+                    }
+                    
+                    debounceTimer = setTimeout(function() {
+                        fetch(`/products/search/suggest?query=${encodeURIComponent(query)}`)
+                            .then(response => response.json())
+                            .then(suggestions => {
+                                suggestionsContainer.innerHTML = '';
+                                
+                                if (suggestions.length === 0) {
+                                    suggestionsContainer.style.display = 'none';
+                                    return;
+                                }
+                                
+                                suggestions.forEach(suggestion => {
+                                    const div = document.createElement('div');
+                                    div.className = 'suggestion-item';
+                                    div.textContent = suggestion;
+                                    
+                                    div.addEventListener('click', function() {
+                                        input.value = suggestion;
+                                        suggestionsContainer.style.display = 'none';
+                                        window.location.href = '/product/search?query=' + encodeURIComponent(suggestion);
+                                    });
+                                    
+                                    suggestionsContainer.appendChild(div);
+                                });
+                                
+                                suggestionsContainer.style.display = 'block';
+                            })
+                            .catch(error => {
+                                console.error('Error fetching suggestions:', error);
+                                suggestionsContainer.style.display = 'none';
+                            });
+                    }, 300);
+                });
+            }
             
-            // Clear suggestions when clicking outside
+            // Thiết lập xử lý gợi ý cho cả hai ô tìm kiếm
+            setupSearchSuggestions(searchInput, suggestionsDiv);
+            setupSearchSuggestions(popupSearchInput, popupSuggestionsDiv);
+            
+            // Đóng gợi ý khi nhấp chuột ra ngoài
             document.addEventListener('click', function(event) {
                 if (event.target !== searchInput && !suggestionsDiv.contains(event.target)) {
                     suggestionsDiv.style.display = 'none';
                 }
+                
+                if (event.target !== popupSearchInput && !popupSuggestionsDiv.contains(event.target) && 
+                    event.target !== searchToggle && !searchToggle.contains(event.target)) {
+                    popupSuggestionsDiv.style.display = 'none';
+                }
             });
             
-            // Handle input event
-            searchInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                
-                // Clear the previous timer
-                clearTimeout(debounceTimer);
-                
-                // Hide suggestions if query is empty
-                if (query.length === 0) {
-                    suggestionsDiv.style.display = 'none';
-                    return;
+            // Đóng popup khi nhấn Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && searchPopup.style.display === 'block') {
+                    searchPopup.style.display = 'none';
+                    popupSearchInput.value = '';
+                    popupSuggestionsDiv.style.display = 'none';
                 }
-                
-                // Set a new timer for debounce
-                debounceTimer = setTimeout(function() {
-                    // Make AJAX request to get suggestions
-                    fetch(`/products/search/suggest?query=${encodeURIComponent(query)}`)
-                        .then(response => response.json())
-                        .then(suggestions => {
-                            // Clear previous suggestions
-                            suggestionsDiv.innerHTML = '';
-                            
-                            if (suggestions.length === 0) {
-                                suggestionsDiv.style.display = 'none';
-                                return;
-                            }
-                            
-                            // Add new suggestions
-                            suggestions.forEach(suggestion => {
-                                const div = document.createElement('div');
-                                div.className = 'suggestion-item';
-                                div.textContent = suggestion;
-                                
-                                div.addEventListener('click', function() {
-                                    searchInput.value = suggestion;
-                                    suggestionsDiv.style.display = 'none';
-                                    // Optional: auto-submit the form
-                                    // searchInput.form.submit();
-                                });
-                                
-                                suggestionsDiv.appendChild(div);
-                            });
-                            
-                            // Show suggestions
-                            suggestionsDiv.style.display = 'block';
-                        })
-                        .catch(error => {
-                            console.error('Error fetching suggestions:', error);
-                            suggestionsDiv.style.display = 'none';
-                        });
-                }, 300); // 300ms debounce time
             });
+        });
+    </script>
+
+    <!-- Scripts -->
+    <script>
+        // Add iPad media query for text display
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkSize = function() {
+                const width = window.innerWidth;
+                // Target iPad Air and similar sized devices
+                if (width >= 768 && width <= 834) {
+                    // Hide text in navigation for iPad
+                    document.querySelectorAll('.nav-text').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                } else {
+                    // Show text on other devices
+                    document.querySelectorAll('.nav-text').forEach(el => {
+                        el.style.display = 'inline';
+                    });
+                }
+            };
+            
+            // Check on load and resize
+            checkSize();
+            window.addEventListener('resize', checkSize);
         });
     </script>
 </body>
