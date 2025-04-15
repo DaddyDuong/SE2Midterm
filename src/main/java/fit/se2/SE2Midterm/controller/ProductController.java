@@ -51,6 +51,44 @@ public class ProductController {
         return "product/list";
     }
 
+    @GetMapping("/filter")
+    public String filterProducts(
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "type", required = false) String productType,
+            Model model) {
+        
+        List<Product> filteredProducts;
+        if (productType != null && !productType.isEmpty()) {
+            filteredProducts = productService.filterByPriceRangeAndType(minPrice, maxPrice, productType);
+        } else {
+            filteredProducts = productService.filterByPriceRange(minPrice, maxPrice);
+        }
+        
+        model.addAttribute("products", filteredProducts);
+        
+        // Xử lý tiêu đề tốt hơn
+        String title;
+        if (minPrice == null && maxPrice == null) {
+            title = "All Products";
+        } else if (minPrice == null) {
+            title = String.format("Products up to $%.2f", maxPrice);
+        } else if (maxPrice == null) {
+            title = String.format("Products from $%.2f", minPrice);
+        } else {
+            title = String.format("Products $%.2f - $%.2f", minPrice, maxPrice);
+        }
+        
+        model.addAttribute("title", title);
+        
+        // Add the filter values back to the model for form persistence
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("selectedType", productType);
+        
+        return "product/list";
+    }
+
     @GetMapping("/list")
     public String getProductsList(Model model) {
         List<Product> listProducts = productService.getAllProducts();

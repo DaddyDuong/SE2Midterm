@@ -120,4 +120,31 @@ public class ProductService {
         
         return new ArrayList<>(uniqueProducts.values());
     }
+
+    /**
+     * Filter products by price range
+     * @param minPrice Minimum price
+     * @param maxPrice Maximum price
+     * @return List of products within the price range
+     */
+    public List<Product> filterByPriceRange(Double minPrice, Double maxPrice) {
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+        List<Product> products = productRepository.findByPriceRange(minPrice, maxPrice);
+        return removeDuplicates(products);
+    }
+
+    /**
+     * Filter products by price range and type
+     * @param minPrice Minimum price
+     * @param maxPrice Maximum price
+     * @param productType Product type
+     * @return List of products within the price range and of the specified type
+     */
+    public List<Product> filterByPriceRangeAndType(Double minPrice, Double maxPrice, String productType) {
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+        List<Product> products = productRepository.findByPriceRangeAndType(minPrice, maxPrice, productType);
+        return removeDuplicates(products);
+    }
 }
