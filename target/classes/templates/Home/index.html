@@ -10,59 +10,60 @@
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;"></div>
 
     <!-- Hero Slider -->
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active bg-dark">
-                <div class="container">
-                    <div class="row align-items-center py-5" style="min-height: 400px;">
-                        <div class="col-lg-6 text-white">
-                            <h1 class="display-4 fw-bold mb-4">New Season Arrivals</h1>
-                            <p class="lead mb-4">Check out the latest trends and styles for the upcoming season. Get ready to refresh your wardrobe!</p>
-                            <a th:href="@{/products/fashion}" class="btn btn-primary btn-lg px-4 py-2">Shop Now</a>
-                        </div>
-                        <div class="col-lg-6">
-                            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="d-block w-100 rounded" alt="Fashion">
+    <div class="position-relative">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Carousel indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <div class="carousel-inner">
+                <div class="carousel-item active bg-dark">
+                    <div class="container">
+                        <div class="row align-items-center py-5" style="min-height: 400px;">
+                            <div class="col-lg-6 text-white">
+                                <h1 class="display-4 fw-bold mb-4">New Season Arrivals</h1>
+                                <p class="lead mb-4">Check out the latest trends and styles for the upcoming season. Get ready to refresh your wardrobe!</p>
+                                <a th:href="@{/products/fashion}" class="btn btn-primary btn-lg px-4 py-2">Shop Now</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="d-block w-100 rounded" alt="Fashion">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="carousel-item bg-dark">
-                <div class="container">
-                    <div class="row align-items-center py-5" style="min-height: 400px;">
-                        <div class="col-lg-6 text-white">
-                            <h1 class="display-4 fw-bold mb-4">Kitchen Appliances</h1>
-                            <p class="lead mb-4">Discover the latest kitchen gadgets to make cooking easier. Upgrade your kitchen with our premium selection.</p>
-                            <a th:href="@{/products/type?type=Kitchen Appliances}" class="btn btn-primary btn-lg px-4 py-2">Explore</a>
-                        </div>
-                        <div class="col-lg-6">
-                            <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="d-block w-100 rounded" alt="Kitchen Appliances">
+                <div class="carousel-item bg-dark">
+                    <div class="container">
+                        <div class="row align-items-center py-5" style="min-height: 400px;">
+                            <div class="col-lg-6 text-white">
+                                <h1 class="display-4 fw-bold mb-4">Kitchen Appliances</h1>
+                                <p class="lead mb-4">Discover the latest kitchen gadgets to make cooking easier. Upgrade your kitchen with our premium selection.</p>
+                                <a th:href="@{/products/type?type=Kitchen Appliances}" class="btn btn-primary btn-lg px-4 py-2">Explore</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <img src="https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" class="d-block w-100 rounded" alt="Kitchen Appliances">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="carousel-item bg-dark">
-                <div class="container">
-                    <div class="row align-items-center py-5" style="min-height: 400px;">
-                        <div class="col-lg-6 text-white">
-                            <h1 class="display-4 fw-bold mb-4">Home & Decor</h1>
-                            <p class="lead mb-4">Transform your living space with our beautiful home decor collections. Style your home your way.</p>
-                            <a th:href="@{/products/type?type=Home Decor}" class="btn btn-primary btn-lg px-4 py-2">Discover</a>
-                        </div>
-                        <div class="col-lg-6">
-                            <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" class="d-block w-100 rounded" alt="Home Decor">
+                <div class="carousel-item bg-dark">
+                    <div class="container">
+                        <div class="row align-items-center py-5" style="min-height: 400px;">
+                            <div class="col-lg-6 text-white">
+                                <h1 class="display-4 fw-bold mb-4">Home & Decor</h1>
+                                <p class="lead mb-4">Transform your living space with our beautiful home decor collections. Style your home your way.</p>
+                                <a th:href="@{/products/type?type=Home Decor}" class="btn btn-primary btn-lg px-4 py-2">Discover</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" class="d-block w-100 rounded" alt="Home Decor">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
 
     <!-- Deals of the Month -->
@@ -105,27 +106,27 @@
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="product-info flex-grow-1">
-                                <h5 class="card-title" th:text="${product.title}">Product Name</h5>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <span class="text-decoration-line-through text-muted me-2">
-                                            $<span th:text="${product.originalPrice}"></span>
-                                        </span>
-                                        <span class="text-primary fw-bold fs-5">
-                                            $<span th:text="${product.price}"></span>
-                                        </span>
-                                    </div>
+                            <h5 class="card-title" th:text="${product.title}">Product Name</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="text-decoration-line-through text-muted me-2">
+                                        $<span th:text="${product.originalPrice}"></span>
+                                    </span>
+                                    <span class="text-primary fw-bold fs-5">
+                                        $<span th:text="${product.price}"></span>
+                                    </span>
                                 </div>
                             </div>
+                            </div>
                             <div class="product-actions mt-auto">
-                                <div class="d-flex justify-content-between">
-                                    <button class="btn btn-primary add-to-cart"
-                                            th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
-                                        <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                                    </button>
-                                    <a th:href="@{'/products/' + ${product.id}}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-eye me-1"></i> View
-                                    </a>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-primary add-to-cart"
+                                        th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
+                                    <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                                </button>
+                                <a th:href="@{'/products/' + ${product.id}}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
                                 </div>
                             </div>
                         </div>
@@ -204,27 +205,27 @@
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="product-info flex-grow-1">
-                                <h5 class="card-title" th:text="${product.title}">Product Name</h5>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <span th:if="${product.originalPrice != null}" class="text-decoration-line-through text-muted me-2">
-                                            $<span th:text="${product.originalPrice}"></span>
-                                        </span>
-                                        <span class="text-primary fw-bold">
-                                            $<span th:text="${product.price}"></span>
-                                        </span>
-                                    </div>
+                            <h5 class="card-title" th:text="${product.title}">Product Name</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span th:if="${product.originalPrice != null}" class="text-decoration-line-through text-muted me-2">
+                                        $<span th:text="${product.originalPrice}"></span>
+                                    </span>
+                                    <span class="text-primary fw-bold">
+                                        $<span th:text="${product.price}"></span>
+                                    </span>
                                 </div>
                             </div>
+                            </div>
                             <div class="product-actions mt-auto">
-                                <div class="d-flex justify-content-between">
-                                    <button class="btn btn-sm btn-primary add-to-cart" 
-                                            th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
-                                        <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                                    </button>
-                                    <a th:href="@{'/products/' + ${product.id}}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-eye me-1"></i> View
-                                    </a>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-primary add-to-cart"
+                                        th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
+                                    <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                                </button>
+                                <a th:href="@{'/products/' + ${product.id}}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
                                 </div>
                             </div>
                         </div>
@@ -255,27 +256,27 @@
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="product-info flex-grow-1">
-                                <h5 class="card-title" th:text="${product.title}">Product Name</h5>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <span th:if="${product.originalPrice != null}" class="text-decoration-line-through text-muted me-2">
-                                            $<span th:text="${product.originalPrice}"></span>
-                                        </span>
-                                        <span class="text-primary fw-bold">
-                                            $<span th:text="${product.price}"></span>
-                                        </span>
-                                    </div>
+                            <h5 class="card-title" th:text="${product.title}">Product Name</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span th:if="${product.originalPrice != null}" class="text-decoration-line-through text-muted me-2">
+                                        $<span th:text="${product.originalPrice}"></span>
+                                    </span>
+                                    <span class="text-primary fw-bold">
+                                        $<span th:text="${product.price}"></span>
+                                    </span>
                                 </div>
                             </div>
+                            </div>
                             <div class="product-actions mt-auto">
-                                <div class="d-flex justify-content-between">
-                                    <button class="btn btn-sm btn-primary add-to-cart"
-                                            th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
-                                        <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-                                    </button>
-                                    <a th:href="@{'/products/' + ${product.id}}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-eye me-1"></i> View
-                                    </a>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-primary add-to-cart"
+                                        th:attr="data-product-id=${product.id}, data-product-name=${product.title}">
+                                    <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                                </button>
+                                <a th:href="@{'/products/' + ${product.id}}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
                                 </div>
                             </div>
                         </div>

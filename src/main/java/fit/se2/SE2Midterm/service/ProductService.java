@@ -102,6 +102,31 @@ public class ProductService {
     }
     
     /**
+     * Get search suggestions based on product titles
+     * @param query Search query
+     * @return List of suggested search terms
+     */
+    public List<String> getSearchSuggestions(String query) {
+        List<Product> products = productRepository.findByTitleContainingIgnoreCase(query);
+        List<String> suggestions = new ArrayList<>();
+        
+        for (Product product : products) {
+            if (!suggestions.contains(product.getTitle()) && suggestions.size() < 10) {
+                suggestions.add(product.getTitle());
+            }
+            
+            // Extract product type as suggestion if it contains the query
+            String type = product.getProductType();
+            if (type != null && type.toLowerCase().contains(query.toLowerCase()) 
+                    && !suggestions.contains(type) && suggestions.size() < 10) {
+                suggestions.add(type);
+            }
+        }
+        
+        return suggestions;
+    }
+    
+    /**
      * Helper method to remove duplicate products
      * @param products List of products to deduplicate
      * @return List of unique products

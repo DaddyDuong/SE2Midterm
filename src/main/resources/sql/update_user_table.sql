@@ -12,6 +12,6 @@ ADD COLUMN IF NOT EXISTS preferred_payment_method VARCHAR(50);
 
 -- Update existing users with some default values
 UPDATE user
-SET full_name = CONCAT(username, ' User'),
+SET full_name = username,
     gender = 'Not specified'
  

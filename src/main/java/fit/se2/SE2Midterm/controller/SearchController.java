@@ -25,6 +25,7 @@ public class SearchController {
         model.addAttribute("title", "Search Results for: " + query);
         model.addAttribute("searchQuery", query);
         
+        // Chuyển người dùng đến trang danh sách sản phẩm
         return "product/list";
     }
 } 

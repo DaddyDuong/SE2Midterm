@@ -2,21 +2,34 @@ package fit.se2.SE2Midterm.controller;
 
 import fit.se2.SE2Midterm.model.User;
 import fit.se2.SE2Midterm.model.Cart;
+import fit.se2.SE2Midterm.model.CartItem;
 import fit.se2.SE2Midterm.service.UserService;
+import fit.se2.SE2Midterm.service.UserCartService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.util.StringUtils;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserCartService userCartService;
 
     @GetMapping({"/login", "/user/login"})
     public String showLoginForm(Model model) {
@@ -31,7 +44,37 @@ public class UserController {
 
         if (authenticatedUser != null) {
             System.out.println("Login successful for: " + authenticatedUser.getUsername());
+            
+            // Get the current session cart (anonymous user's cart)
+            Cart sessionCart = (Cart) session.getAttribute("cart");
+            
+            // Load the user's saved cart from database
+            Cart savedCart = userCartService.loadUserCart(authenticatedUser);
+            
+            // Handle cart merging
+            if (sessionCart != null && !sessionCart.isEmpty() && savedCart != null) {
+                // Merge items from session cart into saved cart
+                for (CartItem item : sessionCart.getItems()) {
+                    savedCart.addItem(item.getProduct(), item.getQuantity());
+                }
+                
+                // Save the merged cart back to the database
+                userCartService.saveUserCart(authenticatedUser, savedCart);
+                
+                // Set the merged cart to session
+                session.setAttribute("cart", savedCart);
+            } else if (sessionCart != null && !sessionCart.isEmpty()) {
+                // If user has no saved cart but has items in session cart, save session cart
+                userCartService.saveUserCart(authenticatedUser, sessionCart);
+                // Keep using session cart
+            } else if (savedCart != null) {
+                // If user has no session cart but has a saved cart, use saved cart
+                session.setAttribute("cart", savedCart);
+            }
+            
+            // Set the authenticated user in session
             session.setAttribute("loggedInUser", authenticatedUser);
+            
             return "redirect:/";
         } else {
             // Add error message to the model
@@ -49,6 +92,17 @@ public class UserController {
 
     @PostMapping({"/register", "/user/register"})
     public String processRegistration(@ModelAttribute("user") User user, Model model) {
+        // Validate input length - at least 4 characters required
+        if (user.getUsername() == null || user.getUsername().length() < 4) {
+            model.addAttribute("error", "Username must be at least 4 characters long.");
+            return "user/register";
+        }
+        
+        if (user.getPassword() == null || user.getPassword().length() < 4) {
+            model.addAttribute("error", "Password must be at least 4 characters long.");
+            return "user/register";
+        }
+        
         boolean registrationSuccess = userService.registerUser(user);
 
         if (registrationSuccess) {
@@ -63,6 +117,17 @@ public class UserController {
 
     @GetMapping({"/logout", "/user/logout"})
     public String logout(HttpSession session) {
+        // Save user's cart to database before logout
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        Cart cart = (Cart) session.getAttribute("cart");
+        
+        if (loggedInUser != null && cart != null) {
+            // Save the current state of the cart to the database
+            userCartService.saveUserCart(loggedInUser, cart);
+            System.out.println("Saved cart for user: " + loggedInUser.getUsername() + " with " + cart.getTotalItems() + " items");
+        }
+        
+        // Invalidate the session to log the user out
         session.invalidate();
         return "redirect:/";
     }
@@ -282,5 +347,110 @@ public class UserController {
         }
         
         return status;
+    }
+
+    @PostMapping("/user/profile/upload-avatar")
+    public String handleAvatarUpload(@RequestParam("avatarFile") MultipartFile file, 
+                                    HttpSession session, 
+                                    RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("loggedInUser");
+        
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("error", "You must be logged in to upload an avatar.");
+            return "redirect:/user/login";
+        }
+        
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Please select a file to upload.");
+            return "redirect:/user/profile";
+        }
+        
+        // Check file type
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            redirectAttributes.addFlashAttribute("error", "Only image files are allowed.");
+            return "redirect:/user/profile";
+        }
+        
+        // Check file size (max 2MB)
+        if (file.getSize() > 2 * 1024 * 1024) {
+            redirectAttributes.addFlashAttribute("error", "File size exceeds the 2MB limit.");
+            return "redirect:/user/profile";
+        }
+        
+        try {
+            // Create directories if they don't exist
+            String uploadDir = "uploads/avatars";  // Changed to be relative to application root
+            String publicPathDir = "/uploads/avatars";
+            Path uploadPath = Paths.get(uploadDir);
+            
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+                System.out.println("Created directory: " + uploadPath.toAbsolutePath());
+            }
+            
+            // Generate a unique filename to prevent overwriting
+            String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileExtension = "";
+            if (originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+            
+            String filename = user.getUsername() + "_" + System.currentTimeMillis() + fileExtension;
+            Path filePath = uploadPath.resolve(filename);
+            
+            // Delete the old avatar file if it exists
+            if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+                try {
+                    String oldAvatarUrl = user.getAvatarUrl();
+                    // Remove query parameters if present
+                    if (oldAvatarUrl.contains("?")) {
+                        oldAvatarUrl = oldAvatarUrl.substring(0, oldAvatarUrl.indexOf("?"));
+                    }
+                    String oldFilename = oldAvatarUrl.substring(oldAvatarUrl.lastIndexOf("/") + 1);
+                    Path oldFilePath = uploadPath.resolve(oldFilename);
+                    
+                    if (Files.exists(oldFilePath)) {
+                        Files.delete(oldFilePath);
+                        System.out.println("Deleted old avatar file: " + oldFilePath.toAbsolutePath());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error deleting old avatar file: " + e.getMessage());
+                    // Continue with the upload even if deletion fails
+                }
+            }
+            
+            // Save the file
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Saved new avatar file: " + filePath.toAbsolutePath());
+            
+            // Verify file exists after saving
+            if (Files.exists(filePath)) {
+                System.out.println("Verify: File exists at: " + filePath);
+                System.out.println("File size: " + Files.size(filePath) + " bytes");
+            } else {
+                System.out.println("WARNING: File does not exist after saving!");
+            }
+            
+            // Update user's avatar URL (with timestamp to prevent caching)
+            String avatarUrl = publicPathDir + "/" + filename + "?t=" + System.currentTimeMillis();
+            user.setAvatarUrl(avatarUrl);
+            userService.updateUser(user);
+            
+            // Debug information
+            System.out.println("Avatar URL set to: " + avatarUrl);
+            System.out.println("User object after update: " + user.toString());
+            
+            // Update the session
+            session.setAttribute("loggedInUser", user);
+            
+            redirectAttributes.addFlashAttribute("successMessage", "Avatar uploaded successfully!");
+        } catch (IOException e) {
+            System.err.println("Error uploading avatar: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Failed to upload avatar: " + e.getMessage());
+        }
+        
+        return "redirect:/user/profile";
     }
 }

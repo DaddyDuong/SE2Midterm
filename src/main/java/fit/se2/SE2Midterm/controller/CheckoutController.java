@@ -4,6 +4,7 @@ import fit.se2.SE2Midterm.model.Cart;
 import fit.se2.SE2Midterm.model.Order;
 import fit.se2.SE2Midterm.model.User;
 import fit.se2.SE2Midterm.service.OrderService;
+import fit.se2.SE2Midterm.service.UserCartService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,9 @@ import java.util.HashMap;
 public class CheckoutController {
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private UserCartService userCartService;
 
     @GetMapping
     public String showCheckoutPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
@@ -84,6 +88,9 @@ public class CheckoutController {
             // Clear the cart after successful order
             cart.clear();
             session.setAttribute("cart", cart);
+            
+            // Also clear the saved cart in the database
+            userCartService.clearUserCart(user);
 
             // Add success message
             redirectAttributes.addFlashAttribute("orderSuccess", "Order placed successfully!");

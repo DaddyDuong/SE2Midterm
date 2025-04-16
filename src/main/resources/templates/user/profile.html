@@ -10,120 +10,148 @@
 
     <!-- Profile Section -->
     <main class="flex-grow-1">
-        <div class="container py-5">
-            <div class="row">
-                <!-- Sidebar Navigation -->
-                <div class="col-lg-3 mb-4">
-                    <div class="list-group">
-                        <div class="list-group-item bg-dark text-white">
-                            <h5 class="mb-0">My Account</h5>
-                        </div>
-                        <a th:href="@{/user/account}" class="list-group-item list-group-item-action">Account Overview</a>
-                        <a th:href="@{/user/profile}" class="list-group-item list-group-item-action active">My Profile</a>
-                        <a th:href="@{/cart/view}" class="list-group-item list-group-item-action">My Cart</a>
-                        <a th:href="@{/user/logout}" class="list-group-item list-group-item-action text-danger">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
+    <div class="container py-5">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-lg-3 mb-4">
+                <div class="list-group">
+                    <div class="list-group-item bg-dark text-white">
+                        <h5 class="mb-0">My Account</h5>
                     </div>
+                    <a th:href="@{/user/account}" class="list-group-item list-group-item-action">Account Overview</a>
+                    <a th:href="@{/user/profile}" class="list-group-item list-group-item-action active">My Profile</a>
+                    <a th:href="@{/cart/view}" class="list-group-item list-group-item-action">My Cart</a>
+                    <a th:href="@{/user/logout}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                    </a>
                 </div>
-                
-                <!-- Main Content -->
-                <div class="col-lg-9">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-header bg-dark text-white">
-                            <h4 class="mb-0">My Profile</h4>
-                        </div>
-                        
-                        <!-- Success message -->
-                        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
-                            <span th:text="${successMessage}">Profile updated successfully!</span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        
-                        <div class="card-body p-4">
-                            <form th:action="@{/user/profile/update}" th:object="${user}" method="post">
-                                <div class="row">
-                                    <!-- Avatar Column -->
-                                    <div class="col-md-4 mb-4 text-center">
-                                        <div class="avatar-wrapper mb-3">
-                                            <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="User Avatar" 
-                                                class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                                            <img th:unless="${user.avatarUrl}" src="https://via.placeholder.com/150?text=Avatar" alt="Default Avatar" 
-                                                class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="avatarUrl" class="form-label">Avatar URL</label>
-                                            <input type="text" class="form-control" id="avatarUrl" th:field="*{avatarUrl}" 
-                                                placeholder="Enter image URL">
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">My Profile</h4>
+                    </div>
+                    
+                    <!-- Success message -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+                        <span th:text="${successMessage}">Profile updated successfully!</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Error message -->
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+                        <span th:text="${error}">Error message</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <!-- Avatar Column -->
+                            <div class="col-md-4 mb-4 text-center">
+                                <!-- Avatar Display -->
+                                <div class="avatar-wrapper mb-4">
+                                    <!-- Remove debug info -->
+                                    
+                                    <div class="avatar-container">
+                                        <img id="avatarImage" th:if="${user.avatarUrl != null}" 
+                                             th:src="${user.avatarUrl}" 
+                                             class="avatar-img rounded-circle img-thumbnail shadow"
+                                             alt="User avatar" 
+                                             style="width: 150px; height: 150px; object-fit: cover;" />
+                                                 
+                                        <!-- Default avatar placeholder if no image is uploaded -->
+                                        <div id="avatarPlaceholder" th:if="${user.avatarUrl == null}" 
+                                             class="avatar-placeholder rounded-circle d-flex justify-content-center align-items-center bg-light shadow"
+                                             style="width: 150px; height: 150px; margin: 0 auto;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-person text-secondary" viewBox="0 0 16 16">
+                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                                            </svg>
                                         </div>
                                     </div>
                                     
-                                    <!-- Personal Info Column -->
-                                    <div class="col-md-8">
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="username" class="form-label">Username</label>
-                                                <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
-                                            </div>
-                                            
-                                            <div class="col-md-6">
-                                                <label for="fullName" class="form-label">Full Name</label>
-                                                <input type="text" class="form-control" id="fullName" th:field="*{fullName}" 
-                                                    placeholder="Enter your full name">
-                                            </div>
-                                            
-                                            <div class="col-md-6">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" th:field="*{email}" 
-                                                    placeholder="Enter your email">
-                                            </div>
-                                            
-                                            <div class="col-md-6">
-                                                <label for="phoneNumber" class="form-label">Phone Number</label>
-                                                <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" 
-                                                    placeholder="Enter your phone number">
-                                            </div>
-                                            
-                                            <div class="col-12">
-                                                <label for="address" class="form-label">Address</label>
-                                                <textarea class="form-control" id="address" rows="3" th:field="*{address}" 
-                                                        placeholder="Enter your address"></textarea>
-                                            </div>
-                                            
-                                            <div class="col-md-4">
-                                                <label for="age" class="form-label">Age</label>
-                                                <input type="number" class="form-control" id="age" th:field="*{age}" 
-                                                    placeholder="Enter your age" min="1" max="120">
-                                            </div>
-                                            
-                                            <div class="col-md-4">
-                                                <label for="gender" class="form-label">Gender</label>
-                                                <select class="form-select" id="gender" th:field="*{gender}">
-                                                    <option value="">Select gender</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Other">Other</option>
-                                                    <option value="Prefer not to say">Prefer not to say</option>
-                                                </select>
-                                            </div>
-                                            
-                                            <div class="col-12 mt-4">
-                                                <button type="submit" class="btn btn-primary px-4">
-                                                    <i class="fas fa-save me-2"></i> Save Changes
-                                                </button>
-                                                <a th:href="@{/user/account}" class="btn btn-secondary px-4 ms-2">
-                                                    <i class="fas fa-times me-2"></i> Cancel
-                                                </a>
-                                            </div>
+                                    <!-- Upload form -->
+                                    <form id="avatarForm" th:action="@{/user/profile/upload-avatar}" method="post" enctype="multipart/form-data" class="mt-3">
+                                        <!-- File input -->
+                                        <div class="mb-3">
+                                            <label for="avatarFile" class="form-label">Choose an image (Max: 2MB)</label>
+                                            <input class="form-control" type="file" id="avatarFile" name="avatarFile" accept="image/*">
+                                            <div class="form-text">Select an image file and click Upload</div>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">Upload Avatar</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Personal Info Column -->
+                            <div class="col-md-8">
+                                <form id="profile-form" th:action="@{/user/profile/update}" th:object="${user}" method="post">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="username" class="form-label">Username</label>
+                                            <input type="text" class="form-control" id="username" th:field="*{username}" readonly>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="fullName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="fullName" th:field="*{fullName}" 
+                                                   placeholder="Enter your full name">
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                                   placeholder="Enter your email">
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phoneNumber" th:field="*{phoneNumber}" 
+                                                   placeholder="Enter your phone number">
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <label for="address" class="form-label">Address</label>
+                                            <textarea class="form-control" id="address" rows="3" th:field="*{address}" 
+                                                      placeholder="Enter your address"></textarea>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label for="age" class="form-label">Age</label>
+                                            <input type="number" class="form-control" id="age" th:field="*{age}" 
+                                                   placeholder="Enter your age" min="1" max="120">
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label for="gender" class="form-label">Gender</label>
+                                            <select class="form-select" id="gender" th:field="*{gender}">
+                                                <option value="">Select gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                                <option value="Prefer not to say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-12 mt-4">
+                                            <button type="submit" class="btn btn-primary px-4">
+                                                <i class="fas fa-save me-2"></i> Save Changes
+                                            </button>
+                                            <a th:href="@{/user/account}" class="btn btn-secondary px-4 ms-2">
+                                                <i class="fas fa-times me-2"></i> Cancel
+                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </main>
 
     <!-- Footer -->
@@ -199,7 +227,7 @@
             // Check if user is logged in by looking for username field which should be pre-filled
             const usernameField = document.getElementById('username');
             
-            // Không chuyển hướng - controller phía server đã xử lý việc này
+            // Log debugging information
             if (!usernameField || !usernameField.value) {
                 console.log('Username field not found or empty, but controller should have already validated session');
             } else {
@@ -240,7 +268,7 @@
             }
             
             // Profile form validation
-            const profileForm = document.querySelector('form');
+            const profileForm = document.getElementById('profile-form');
             if (profileForm) {
                 profileForm.addEventListener('submit', function(event) {
                     let isValid = true;
@@ -312,6 +340,105 @@
             adjustLayout();
             window.addEventListener('resize', adjustLayout);
             window.addEventListener('load', adjustLayout);
+
+            // Force reload avatar image to prevent browser caching
+            const avatarImg = document.getElementById('avatarImage');
+            if (avatarImg) {
+                console.log('Current avatar URL:', avatarImg.src);
+                
+                // Add a random timestamp to force reload
+                if (!avatarImg.src.includes('?t=')) {
+                    avatarImg.src = avatarImg.src + '?t=' + new Date().getTime();
+                    console.log('Updated avatar URL with timestamp:', avatarImg.src);
+                }
+                
+                // Add error handling for avatar image
+                avatarImg.onerror = function() {
+                    console.error('Failed to load avatar image from URL:', this.src);
+                    
+                    // Hide the broken image
+                    this.style.display = 'none';
+                    
+                    // Show the placeholder if it exists
+                    const placeholder = document.getElementById('avatarPlaceholder');
+                    if (placeholder) {
+                        placeholder.style.display = 'flex';
+                    } else {
+                        // Create and display default avatar placeholder if it doesn't exist
+                        const placeholderDiv = document.createElement('div');
+                        placeholderDiv.id = 'avatarPlaceholder';
+                        placeholderDiv.className = 'avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-light shadow';
+                        placeholderDiv.style.width = '150px';
+                        placeholderDiv.style.height = '150px';
+                        placeholderDiv.style.margin = '0 auto';
+                        
+                        placeholderDiv.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-person text-secondary" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"/>
+                            </svg>
+                        `;
+                        
+                        document.querySelector('.avatar-container').appendChild(placeholderDiv);
+                    }
+                };
+            }
+            
+            // Handle file preview
+            const fileInput = document.getElementById('avatarFile');
+            
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Validate file type
+                        if (!file.type.startsWith('image/')) {
+                            alert('Please select an image file.');
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Validate file size (2MB)
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert('File size exceeds 2MB limit.');
+                            this.value = '';
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const avatarImage = document.getElementById('avatarImage');
+                            const placeholder = document.getElementById('avatarPlaceholder');
+                            
+                            if (avatarImage) {
+                                // Update existing image
+                                avatarImage.src = e.target.result;
+                                avatarImage.style.display = 'block';
+                                
+                                // Hide placeholder if visible
+                                if (placeholder) {
+                                    placeholder.style.display = 'none';
+                                }
+                            } else {
+                                // Hide placeholder
+                                if (placeholder) {
+                                    placeholder.style.display = 'none';
+                                }
+                                
+                                // Create new image
+                                const newImage = document.createElement('img');
+                                newImage.id = 'avatarImage';
+                                newImage.className = 'avatar-img rounded-circle img-thumbnail shadow';
+                                newImage.alt = 'User avatar';
+                                newImage.style = 'width: 150px; height: 150px; object-fit: cover;';
+                                newImage.src = e.target.result;
+                                
+                                document.querySelector('.avatar-container').appendChild(newImage);
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
     </script>
 </body>

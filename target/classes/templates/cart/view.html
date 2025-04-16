@@ -9,7 +9,24 @@
     <style>
         .qty-input {
             width: 65px;
-            text-align: center;
+            text-align: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            /* Remove spinner arrows from number input */
+            -moz-appearance: textfield;
+        }
+        /* Remove spinner arrows for Chrome, Safari, Edge, Opera */
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        /* Add these styles to ensure text is centered within input */
+        .input-group .qty-input {
+            text-align: center !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .product-img {
             width: 120px;
@@ -65,12 +82,12 @@
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Cart Items</h5>
-                        <span class="badge bg-primary rounded-pill" th:text="${cart.totalItems + ' items'}">3 items</span>
+                        <span class="badge bg-primary rounded-pill" id="totalItemsBadge" th:text="${cart.totalItems + ' items'}">3 items</span>
                     </div>
                 </div>
                 <div class="card-body">
                     <!-- Cart Item -->
-                    <div th:each="item, status : ${cart.items}" class="card mb-3">
+                    <div th:each="item, status : ${cart.items}" class="card mb-3 cart-item">
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-2 col-4">
@@ -85,14 +102,16 @@
                                     <p class="mb-0" th:if="${item.product.size != null}" th:text="${'Size: ' + item.product.size}">Size: L</p>
                                 </div>
                                 <div class="col-md-2 col-4 mt-3 mt-md-0">
-                                    <span class="fw-bold text-primary" th:text="${'$' + #numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')}">$99.99</span>
+                                    <span class="fw-bold text-primary unit-price" 
+                                          th:text="${'$' + #numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')}"
+                                          th:data-price="${item.product.price}">$99.99</span>
                                 </div>
                                 <div class="col-md-2 col-4 mt-3 mt-md-0">
-                                    <div class="input-group qty-input-group">
+                                    <div class="input-group">
                                         <button class="btn btn-outline-secondary btn-sm decrease-quantity" type="button" th:data-index="${status.index}" th:data-product-id="${item.product.id}">-</button>
                                         <input type="number" class="form-control form-control-sm qty-input" th:id="${'quantity-' + status.index}" 
                                                th:name="${'quantity-' + status.index}" th:value="${item.quantity}" min="1" max="10"
-                                               th:data-product-id="${item.product.id}">
+                                               th:data-product-id="${item.product.id}" readonly>
                                         <button class="btn btn-outline-secondary btn-sm increase-quantity" type="button" th:data-index="${status.index}" th:data-product-id="${item.product.id}">+</button>
                                     </div>
                                 </div>
@@ -100,20 +119,19 @@
                                     <button type="button" class="btn btn-sm btn-outline-danger remove-item" th:data-product-id="${item.product.id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
-                                    <span class="fw-bold ms-2" th:text="${'$' + #numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')}">$199.98</span>
+                                    <span class="fw-bold ms-2 item-subtotal" 
+                                          th:text="${'$' + #numbers.formatDecimal(item.subtotal, 0, 'COMMA', 2, 'POINT')}"
+                                          th:data-subtotal="${item.subtotal}">$199.98</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Cart Actions -->
-                    <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="d-flex justify-content-start align-items-center mt-4">
                         <a th:href="@{/}" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left me-2"></i> Continue Shopping
                         </a>
-                        <button type="button" class="btn btn-primary" id="updateCartBtn">
-                            <i class="fas fa-sync-alt me-2"></i> Update Cart
-                        </button>
                     </div>
                 </div>
             </div>
@@ -143,7 +161,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}">$99.99</span>
+                        <span id="cartSubtotal" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice, 0, 'COMMA', 2, 'POINT')}" th:data-subtotal="${cart.totalPrice}">$99.99</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Shipping:</span>
@@ -151,12 +169,12 @@
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span>Tax (10%):</span>
-                        <span th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 0, 'COMMA', 2, 'POINT')}">$9.99</span>
+                        <span id="cartTax" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 0.1, 0, 'COMMA', 2, 'POINT')}" th:data-tax="${cart.totalPrice * 0.1}">$9.99</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between mb-4">
                         <strong>Total:</strong>
-                        <strong class="text-primary fs-5" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 0, 'COMMA', 2, 'POINT')}">$109.98</strong>
+                        <strong class="text-primary fs-5" id="cartTotal" th:text="${'$' + #numbers.formatDecimal(cart.totalPrice * 1.1, 0, 'COMMA', 2, 'POINT')}" th:data-total="${cart.totalPrice * 1.1}">$109.98</strong>
                     </div>
                     <a th:href="@{/checkout}" class="btn btn-primary w-100 py-2">Proceed to Checkout</a>
                 </div>
@@ -210,8 +228,14 @@
                 const currentValue = parseInt(inputElement.value);
                 
                 if (currentValue < 10) {
-                    inputElement.value = currentValue + 1;
-                    updateCartItem(productId, currentValue + 1);
+                    const newQuantity = currentValue + 1;
+                    inputElement.value = newQuantity;
+                    
+                    // Update subtotal in real-time
+                    updateItemUI(index, productId, newQuantity);
+                    
+                    // Send update to server in the background
+                    updateCartItem(productId, newQuantity, false);
                 }
             });
         });
@@ -224,11 +248,71 @@
                 const currentValue = parseInt(inputElement.value);
                 
                 if (currentValue > 1) {
-                    inputElement.value = currentValue - 1;
-                    updateCartItem(productId, currentValue - 1);
+                    const newQuantity = currentValue - 1;
+                    inputElement.value = newQuantity;
+                    
+                    // Update subtotal in real-time
+                    updateItemUI(index, productId, newQuantity);
+                    
+                    // Send update to server in the background
+                    updateCartItem(productId, newQuantity, false);
                 }
             });
         });
+        
+        // Function to update item UI without page reload
+        function updateItemUI(index, productId, quantity) {
+            const itemElement = document.getElementById('quantity-' + index).closest('.cart-item');
+            const unitPriceElement = itemElement.querySelector('.unit-price');
+            const subtotalElement = itemElement.querySelector('.item-subtotal');
+            
+            // Get the unit price
+            const unitPrice = parseFloat(unitPriceElement.getAttribute('data-price'));
+            
+            // Calculate new subtotal
+            const newSubtotal = unitPrice * quantity;
+            
+            // Update subtotal display
+            subtotalElement.textContent = '$' + newSubtotal.toFixed(2);
+            subtotalElement.setAttribute('data-subtotal', newSubtotal);
+            
+            // Update cart totals
+            updateCartTotals();
+        }
+        
+        // Function to update cart totals
+        function updateCartTotals() {
+            let cartSubtotal = 0;
+            
+            // Sum all item subtotals
+            document.querySelectorAll('.item-subtotal').forEach(element => {
+                cartSubtotal += parseFloat(element.getAttribute('data-subtotal'));
+            });
+            
+            // Update subtotal display
+            const cartSubtotalElement = document.getElementById('cartSubtotal');
+            cartSubtotalElement.textContent = '$' + cartSubtotal.toFixed(2);
+            cartSubtotalElement.setAttribute('data-subtotal', cartSubtotal);
+            
+            // Calculate and update tax
+            const tax = cartSubtotal * 0.1;
+            const cartTaxElement = document.getElementById('cartTax');
+            cartTaxElement.textContent = '$' + tax.toFixed(2);
+            cartTaxElement.setAttribute('data-tax', tax);
+            
+            // Calculate and update total
+            const total = cartSubtotal + tax;
+            const cartTotalElement = document.getElementById('cartTotal');
+            cartTotalElement.textContent = '$' + total.toFixed(2);
+            cartTotalElement.setAttribute('data-total', total);
+            
+            // Update items count
+            let totalItems = 0;
+            document.querySelectorAll('.qty-input').forEach(input => {
+                totalItems += parseInt(input.value);
+            });
+            document.getElementById('totalItemsBadge').textContent = totalItems + ' items';
+        }
         
         // Remove item handlers
         document.querySelectorAll('.remove-item').forEach(button => {
@@ -236,21 +320,6 @@
                 const productId = this.getAttribute('data-product-id');
                 removeCartItem(productId);
             });
-        });
-        
-        // Update cart button handler
-        document.getElementById('updateCartBtn').addEventListener('click', function() {
-            // Collect all items and quantities
-            const updates = [];
-            document.querySelectorAll('.qty-input').forEach(input => {
-                updates.push({
-                    productId: input.getAttribute('data-product-id'),
-                    quantity: input.value
-                });
-            });
-            
-            // Update all at once
-            updateAllCartItems(updates);
         });
         
         // Function to show non-intrusive toast notification
@@ -289,7 +358,7 @@
         }
         
         // Function to update cart item quantity
-        function updateCartItem(productId, quantity) {
+        function updateCartItem(productId, quantity, reload = true) {
             fetch('/cart/update', {
                 method: 'POST',
                 headers: {
@@ -300,9 +369,11 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Cart updated successfully');
-                    // Reload page to reflect changes
-                    window.location.reload();
+                    if (reload) {
+                        showToast('Cart updated successfully');
+                        // Reload page to reflect changes
+                        window.location.reload();
+                    }
                 } else {
                     showToast('Error updating cart', 'danger');
                 }
@@ -336,32 +407,6 @@
                 console.error('Error:', error);
                 showToast('An error occurred while removing item', 'danger');
             });
-        }
-        
-        // Function to update all cart items at once
-        function updateAllCartItems(updates) {
-            // Create a promise for each update
-            const updatePromises = updates.map(update => {
-                return fetch('/cart/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `productId=${update.productId}&quantity=${update.quantity}`
-                }).then(response => response.json());
-            });
-            
-            // Wait for all updates to complete
-            Promise.all(updatePromises)
-                .then(results => {
-                    showToast('Cart updated successfully');
-                    // Reload page to reflect changes
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred while updating cart', 'danger');
-                });
         }
     });
 </script>

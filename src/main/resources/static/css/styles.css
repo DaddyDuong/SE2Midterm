@@ -342,4 +342,197 @@ input[type="submit"] {
     .featured-categories .category-content {
         height: 140px;
     }
+}
+
+/* Carousel Navigation Styles */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 0.9;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 25px;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-control-prev {
+    margin-left: -30px;
+    left: 0;
+}
+
+.carousel-control-next {
+    margin-right: -30px;
+    right: 0;
+}
+
+/* Position the carousel relative to ensure proper arrow placement */
+.position-relative {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Hero carousel specific adjustments */
+#heroCarousel {
+    position: relative;
+}
+
+#heroCarousel .container {
+    position: relative;
+    z-index: 5;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+/* Responsive styles for carousel navigation */
+@media (max-width: 992px) {
+    .carousel-control-prev {
+        margin-left: -15px;
+    }
+    
+    .carousel-control-next {
+        margin-right: -15px;
+    }
+    
+    #heroCarousel .container {
+        padding-left: 70px;
+        padding-right: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        padding: 15px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .carousel-control-prev {
+        margin-left: -10px;
+    }
+    
+    .carousel-control-next {
+        margin-right: -10px;
+    }
+    
+    #heroCarousel .container {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+}
+
+/* Ensure carousel items have proper margin to not overlap with navigation arrows */
+.carousel-item .row {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+/* Carousel Indicators Styles */
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 15;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding-left: 0;
+    list-style: none;
+}
+
+.carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    margin: 0 6px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+    background-color: #fff;
+    width: 14px;
+    height: 14px;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Responsive styles for carousel indicators */
+@media (max-width: 768px) {
+    .carousel-indicators {
+        bottom: 10px;
+    }
+    
+    .carousel-indicators button {
+        width: 10px;
+        height: 10px;
+        margin: 0 4px;
+    }
+    
+    .carousel-indicators button.active {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* Profile page - avatar upload */
+.avatar-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-wrapper img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 3px solid #f8f9fa;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.avatar-wrapper img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+#avatar-upload-form .form-control {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#avatar-upload-form .form-control:hover {
+    background-color: #e9ecef;
+}
+
+#avatar-upload-form .form-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Responsive adjustments for avatar upload */
+@media (max-width: 768px) {
+    .avatar-wrapper img {
+        width: 120px;
+        height: 120px;
+    }
 } 

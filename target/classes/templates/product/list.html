@@ -24,76 +24,53 @@
     </div>
 
     <main class="flex-grow-1">
-        <div class="container py-5">
+        <div class="container py-5 mb-5">
             <div class="row">
                 <div class="col-lg-3 mb-4">
-                    <div class="card border-0 shadow-sm">
+                    <!-- Box 1: Categories -->
+                    <div class="card border-0 shadow-sm mb-4" id="categoriesBox">
                         <div class="card-body">
-                            <h5 class="fw-bold mb-4">Filters</h5>
-                            
-                            <div class="mb-4">
-                                <h6 class="mb-3">Categories</h6>
-                                <div class="list-group">
-                                    <a href="/products" class="list-group-item list-group-item-action">
-                                        All Products
-                                    </a>
-                                    <a href="/products/fashion" class="list-group-item list-group-item-action">
-                                        Fashion
-                                    </a>
-                                    <a href="/products/type?type=Men's Clothing" class="list-group-item list-group-item-action">
-                                        Men's Clothing
-                                    </a>
-                                    <a href="/products/type?type=Women's Clothing" class="list-group-item list-group-item-action">
-                                        Women's Clothing
-                                    </a>
-                                    <a href="/products/type?type=Accessories" class="list-group-item list-group-item-action">
-                                        Accessories
-                                    </a>
-                                    <a href="/products/type?type=Kitchen Appliances" class="list-group-item list-group-item-action">
-                                        Kitchen Appliances
-                                    </a>
-                                    <a href="/products/type?type=Kitchenware" class="list-group-item list-group-item-action">
-                                        Kitchenware
-                                    </a>
-                                    <a href="/products/type?type=Home Decor" class="list-group-item list-group-item-action">
-                                        Home Decor
-                                    </a>
-                                    <a href="/products/type?type=Drinkware" class="list-group-item list-group-item-action">
-                                        Drinkware
-                                    </a>
-                                    <a href="/products/deals" class="list-group-item list-group-item-action text-primary">
-                                        <i class="fas fa-tag me-2"></i>Deals
-                                    </a>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <h6 class="mb-3">Price Range</h6>
-                                <form action="/products/filter" method="get" id="priceFilterForm">
-                                    <div class="d-flex">
-                                        <div class="input-group input-group-sm me-2">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="minPrice" class="form-control" placeholder="Min" min="0" step="0.01"
-                                                th:value="${minPrice}">
-                                        </div>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="maxPrice" class="form-control" placeholder="Max" min="0" step="0.01"
-                                                th:value="${maxPrice}">
-                                        </div>
-                                    </div>
-                                    <input type="hidden" name="type" th:value="${param.type}" th:if="${param.type != null}">
-                                    <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Apply</button>
-                                    <a href="/products" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
-                                </form>
+                            <h5 class="fw-bold mb-4">Categories</h5>
+                            <div class="list-group">
+                                <a href="/products" class="list-group-item list-group-item-action">
+                                    All Products
+                                </a>
+                                <a href="/products/fashion" class="list-group-item list-group-item-action">
+                                    Fashion
+                                </a>
+                                <a href="/products/type?type=Men's Clothing" class="list-group-item list-group-item-action">
+                                    Men's Clothing
+                                </a>
+                                <a href="/products/type?type=Women's Clothing" class="list-group-item list-group-item-action">
+                                    Women's Clothing
+                                </a>
+                                <a href="/products/type?type=Accessories" class="list-group-item list-group-item-action">
+                                    Accessories
+                                </a>
+                                <a href="/products/type?type=Kitchen Appliances" class="list-group-item list-group-item-action">
+                                    Kitchen Appliances
+                                </a>
+                                <a href="/products/type?type=Kitchenware" class="list-group-item list-group-item-action">
+                                    Kitchenware
+                                </a>
+                                <a href="/products/type?type=Home Decor" class="list-group-item list-group-item-action">
+                                    Home Decor
+                                </a>
+                                <a href="/products/type?type=Drinkware" class="list-group-item list-group-item-action">
+                                    Drinkware
+                                </a>
+                                <a href="/products/deals" class="list-group-item list-group-item-action text-primary">
+                                    <i class="fas fa-tag me-2"></i>Deals
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-lg-9">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <!-- Sort by section -->
+                        <div class="d-flex align-items-center me-3 mb-2">
                             <label class="me-2 text-nowrap">Sort by:</label>
                             <select class="form-select form-select-sm" style="width: auto;" id="sortSelect">
                                 <option value="default" selected>Relevance</option>
@@ -102,8 +79,38 @@
                                 <option value="newest">Newest Arrivals</option>
                             </select>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <span class="me-2 text-muted" th:text="${'Showing ' + #lists.size(products) + ' products'}">Showing 24 products</span>
+                        
+                        <!-- Price Range - inline with sort by -->
+                        <div class="d-flex flex-grow-1 align-items-center mb-2">
+                            <div class="d-flex align-items-center flex-nowrap">
+                                <span class="me-2">Price Range:</span>
+                                <form action="/products/filter" method="get" id="priceFilterForm" class="d-flex flex-grow-1 align-items-center">
+                                    <div class="d-flex me-2">
+                                        <div class="input-group input-group-sm me-2">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="minPrice" class="form-control" placeholder="Min" min="0" step="0.01"
+                                                th:value="${minPrice}" style="width: 80px;">
+                                        </div>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" name="maxPrice" class="form-control" placeholder="Max" min="0" step="0.01"
+                                                th:value="${maxPrice}" style="width: 80px;">
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="type" th:value="${param.type}" th:if="${param.type != null}">
+                                    <input type="hidden" name="query" th:value="${searchQuery}" th:if="${searchQuery != null}">
+                                    <div class="d-flex">
+                                        <button type="submit" class="btn btn-primary btn-sm me-2">Apply</button>
+                                        <a href="/products" class="btn btn-outline-secondary btn-sm" th:if="${searchQuery == null}">Clear Filters</a>
+                                        <a th:href="@{'/product/search?query=' + ${searchQuery}}" class="btn btn-outline-secondary btn-sm" th:if="${searchQuery != null}">Clear Filters</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Product count -->
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="text-muted" th:text="${'Showing ' + #lists.size(products) + ' products'}">Showing 24 products</span>
                         </div>
                     </div>
                     
@@ -229,6 +236,10 @@
                     return priceA - priceB;
                 } else if (sortValue === 'price-high') {
                     return priceB - priceA;
+                } else if (sortValue === 'newest') {
+                    const indexA = products.indexOf(a);
+                    const indexB = products.indexOf(b);
+                    return indexB - indexA;
                 } else {
                     return 0;
                 }
