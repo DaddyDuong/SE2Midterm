@@ -56,35 +56,80 @@ public class ProductController {
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
             @RequestParam(value = "type", required = false) String productType,
+            @RequestParam(value = "category", required = false) String category,
             Model model) {
         
         List<Product> filteredProducts;
+        
+        // Decide how to filter based on the parameters
         if (productType != null && !productType.isEmpty()) {
+            // Filter by type and price range
             filteredProducts = productService.filterByPriceRangeAndType(minPrice, maxPrice, productType);
+        } else if (category != null && category.equals("fashion")) {
+            // Handle fashion category specifically
+            List<Product> menClothing = productService.getProductsByType("Men's Clothing");
+            List<Product> womenClothing = productService.getProductsByType("Women's Clothing");
+            List<Product> accessories = productService.getProductsByType("Accessories");
+            
+            // Combine all fashion products
+            List<Product> allFashion = new ArrayList<>();
+            allFashion.addAll(menClothing);
+            allFashion.addAll(womenClothing);
+            allFashion.addAll(accessories);
+            
+            // Remove duplicates
+            List<Product> uniqueFashion = removeDuplicatesByTitle(allFashion);
+            
+            // Filter by price if needed
+            if (minPrice != null || maxPrice != null) {
+                filteredProducts = uniqueFashion.stream()
+                    .filter(product -> {
+                        double price = product.getPrice();
+                        boolean matchesMin = minPrice == null || price >= minPrice;
+                        boolean matchesMax = maxPrice == null || price <= maxPrice;
+                        return matchesMin && matchesMax;
+                    })
+                    .collect(Collectors.toList());
+            } else {
+                filteredProducts = uniqueFashion;
+            }
+            
+            // Set fashion title
+            model.addAttribute("title", "Fashion Products");
         } else {
+            // Just filter by price range
             filteredProducts = productService.filterByPriceRange(minPrice, maxPrice);
         }
         
         model.addAttribute("products", filteredProducts);
         
-        // Xử lý tiêu đề tốt hơn
-        String title;
-        if (minPrice == null && maxPrice == null) {
-            title = "All Products";
-        } else if (minPrice == null) {
-            title = String.format("Products up to $%.2f", maxPrice);
-        } else if (maxPrice == null) {
-            title = String.format("Products from $%.2f", minPrice);
-        } else {
-            title = String.format("Products $%.2f - $%.2f", minPrice, maxPrice);
+        // Only set title if not already set (for fashion category)
+        if (model.getAttribute("title") == null) {
+            // Generate price range title
+            String title;
+            if (minPrice == null && maxPrice == null) {
+                title = "All Products";
+            } else if (minPrice == null) {
+                title = String.format("Products up to $%.2f", maxPrice);
+            } else if (maxPrice == null) {
+                title = String.format("Products from $%.2f", minPrice);
+            } else {
+                title = String.format("Products $%.2f - $%.2f", minPrice, maxPrice);
+            }
+            
+            // Append category info if needed
+            if (productType != null && !productType.isEmpty()) {
+                title = productType + " - " + title;
+            }
+            
+            model.addAttribute("title", title);
         }
-        
-        model.addAttribute("title", title);
         
         // Add the filter values back to the model for form persistence
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("selectedType", productType);
+        model.addAttribute("category", category);
         
         return "product/list";
     }

@@ -98,10 +98,12 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="type" th:value="${param.type}" th:if="${param.type != null}">
+                                    <input type="hidden" name="category" value="fashion" th:if="${title != null and title == 'Fashion Products'}">
                                     <input type="hidden" name="query" th:value="${searchQuery}" th:if="${searchQuery != null}">
                                     <div class="d-flex">
                                         <button type="submit" class="btn btn-primary btn-sm me-2">Apply</button>
-                                        <a href="/products" class="btn btn-outline-secondary btn-sm" th:if="${searchQuery == null}">Clear Filters</a>
+                                        <a href="/products" class="btn btn-outline-secondary btn-sm" th:if="${searchQuery == null and title == null}">Clear Filters</a>
+                                        <a href="/products/fashion" class="btn btn-outline-secondary btn-sm" th:if="${title != null and title == 'Fashion Products'}">Clear Filters</a>
                                         <a th:href="@{'/product/search?query=' + ${searchQuery}}" class="btn btn-outline-secondary btn-sm" th:if="${searchQuery != null}">Clear Filters</a>
                                     </div>
                                 </form>
